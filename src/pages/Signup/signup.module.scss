@@ -35,7 +35,7 @@
     }
 
     .buttonContainer {
-      margin-top: 5em;
+      margin-top: 4em;
 
       button,
       a {
@@ -50,6 +50,11 @@
         line-height: 50px;
         color: #fff;
         overflow: hidden;
+      }
+
+      .check {
+        background-color: #f871bb;
+        cursor: pointer;
       }
 
       .signup {

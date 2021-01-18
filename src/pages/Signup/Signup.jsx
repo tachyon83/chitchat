@@ -6,6 +6,7 @@ import styles from './signup.module.scss';
 
 function Signup({ history }) {
   const [input, setInput] = useState({ id: '', password: '', nick: '' });
+  const [idPass, setIdPass] = useState(false);
   const { id, password, nick } = input;
 
   const handleInputChange = (e) => {
@@ -13,8 +14,31 @@ function Signup({ history }) {
     setInput({ ...input, [name]: value });
   };
 
+  const handleIdCheck = () => {
+    if (id === '') {
+      return;
+    }
+    axios
+      .get(`/user/idcheck/:${id}`)
+      .then((res) => {
+        console.log(res);
+        if (res.data.result) {
+          alert('username pass');
+          setIdPass(true);
+        } else {
+          alert('invalid username');
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const handleSignup = () => {
+    if (!idPass) {
+      alert('check your username first');
+      return;
+    }
     if (id === '' || password === '' || nick === '') {
+      alert('missing');
       return;
     }
     axios
@@ -66,6 +90,13 @@ function Signup({ history }) {
           />
         </div>
         <div className={styles.buttonContainer}>
+          <button
+            type="button"
+            className={styles.check}
+            onClick={handleIdCheck}
+          >
+            Check Username
+          </button>
           <button
             type="submit"
             className={styles.signup}
