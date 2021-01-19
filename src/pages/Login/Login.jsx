@@ -18,15 +18,10 @@ function Login({ history }) {
       return;
     }
     axios
-      .post('/user/signin', input)
+      .post('/user/signin', input, { withCredentials: true })
       .then((res) => {
-        /////////////////////////////
-        /////////////////////////////
-        /////////////////////////////
-        console.log(res.data);
         if (res.data.result) {
-          alert('true');
-          history.push('/lobby');
+          history.push('/main');
         }
       })
       .catch((err) => console.log(err));

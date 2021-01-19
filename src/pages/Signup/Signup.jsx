@@ -19,9 +19,9 @@ function Signup({ history }) {
       return;
     }
     axios
-      .get(`/user/idcheck/:${id}`)
+      .get(`/user/idcheck/${id}`)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         if (res.data.result) {
           alert('username pass');
           setIdPass(true);
@@ -44,12 +44,7 @@ function Signup({ history }) {
     axios
       .post('/user/signup', input)
       .then((res) => {
-        /////////////////////////////
-        /////////////////////////////
-        /////////////////////////////
-        console.log(res.data);
         if (res.data.result) {
-          alert('true');
           history.push('/');
         }
       })
