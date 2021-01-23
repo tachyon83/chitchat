@@ -3,6 +3,7 @@ const host = require('.././host');
 
 const socketIo = (function () {
   let socket;
+
   const initiate = async () => {
     return await io(host.SERVER, {
       withCredentials: true,
@@ -20,4 +21,8 @@ const socketIo = (function () {
   };
 })();
 
-export default socketIo;
+// async function connectSocket() {
+//   return await socketIo.getSocket();
+// }
+
+export default socketIo.getSocket;

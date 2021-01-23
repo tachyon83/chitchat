@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import styles from './login.module.scss';
+import getSocket from '../../utils/util';
 
 function Login({ history }) {
   const [input, setInput] = useState({ username: '', password: '' });
@@ -19,8 +20,9 @@ function Login({ history }) {
     }
     axios
       .post('/user/signin', input, { withCredentials: true })
-      .then((res) => {
+      .then(async (res) => {
         if (res.data.result) {
+          await getSocket();
           history.push('/main');
         }
       })
