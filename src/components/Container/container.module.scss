@@ -1,0 +1,27 @@
+.container {
+  background-image: url('../../assets/bg.png');
+  min-height: 85vh;
+  padding: 4em;
+}
+
+.body {
+  background-color: white;
+  width: 90%;
+  margin: auto;
+  height: 80vh;
+  border-radius: 1.5em;
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  .icons {
+    flex: 1;
+    background-color: #6c2e8b;
+    border-top-left-radius: 1.5em;
+    border-bottom-left-radius: 1.5em;
+    padding: 1em;
+  }
+
+  .children {
+    flex: 20;
+    padding: 1em;
+  }
+}

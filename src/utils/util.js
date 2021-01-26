@@ -15,14 +15,9 @@ const socketIo = (function () {
         console.log('This socket instance creator must be called only once');
         socket = await initiate();
       }
-      console.log(socket);
       return socket;
     },
   };
 })();
-
-// async function connectSocket() {
-//   return await socketIo.getSocket();
-// }
 
 export default socketIo.getSocket;

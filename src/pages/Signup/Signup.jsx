@@ -67,7 +67,7 @@ function Signup({ history }) {
         </div>
         <div className={styles.inputBox}>
           <input
-            type="text"
+            type="password"
             placeholder="Password"
             name="password"
             value={password}
