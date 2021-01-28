@@ -1,23 +1,47 @@
 .container {
   background-image: url('../../assets/bg.png');
   min-height: 85vh;
-  padding: 4em;
+  padding: 4em 6em;
+}
+
+.signout {
+  float: right;
+  padding: 1em;
+  margin-bottom: 2em;
+  background-color: #6c2e8b;
+  color: white;
+  border-radius: 0.7em;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+  cursor: pointer;
 }
 
 .body {
   background-color: white;
-  width: 90%;
+  width: 100%;
   margin: auto;
-  height: 80vh;
+  height: 70vh;
   border-radius: 1.5em;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  .icons {
+
+  .iconContainer {
     flex: 1;
     background-color: #6c2e8b;
     border-top-left-radius: 1.5em;
     border-bottom-left-radius: 1.5em;
     padding: 1em;
+    text-align: center;
+
+    .icons {
+      display: flex;
+      flex-direction: column;
+      margin-top: 30vh;
+      height: 20%;
+
+      a {
+        flex: 1;
+      }
+    }
   }
 
   .children {

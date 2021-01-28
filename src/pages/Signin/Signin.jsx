@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import axios from 'axios';
-import styles from './login.module.scss';
 import getSocket from '../../utils/util';
+import { useRecoilState } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
+import styles from './signin.module.scss';
 
-function Login({ history }) {
+function Signin({ history }) {
+  const [usernameState, setUsernameState] = useRecoilState(UsernameState);
   const [input, setInput] = useState({ username: '', password: '' });
   const { username, password } = input;
 
@@ -22,6 +25,7 @@ function Login({ history }) {
       .post('/user/signin', input, { withCredentials: true })
       .then(async (res) => {
         if (res.data.result) {
+          setUsernameState(res.data.packet);
           await getSocket();
           history.push('/main');
         }
@@ -69,4 +73,4 @@ function Login({ history }) {
   );
 }
 
-export default withRouter(Login);
+export default withRouter(Signin);

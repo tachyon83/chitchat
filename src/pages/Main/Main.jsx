@@ -1,14 +1,21 @@
 import React from 'react';
 import Container from '../../components/Container/Container';
+import { useRecoilValue } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 import { withRouter } from 'react-router';
+import ChattingImage from '../../assets/room-wrap-bg.png';
+import styles from './main.module.scss';
 
-function Main({ history }) {
+function Main() {
+  const username = useRecoilValue(UsernameState);
+
   return (
     <Container>
       <div>
-        <p>
-          <strong>깨알같은포인트</strong>님<br />
-          기다리고 있었어요! (유저 정보 조회 필요)
+        <img src={ChattingImage} alt="chatting" className={styles.image} />
+        <p className={styles.text}>
+          <span className={styles.name}>{username}</span> 님<br />
+          기다리고 있었어요!
         </p>
       </div>
     </Container>

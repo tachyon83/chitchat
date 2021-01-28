@@ -2,21 +2,24 @@ import React from 'react';
 import getSocket from '../../utils/util';
 import styles from './room.module.scss';
 
-function Room({ room, num }) {
+function Room({ room, num, setRoomId }) {
   const handleRoomClick = () => {
     const roomId = room.roomId;
-    getSocket().then((socket) => {
-      socket.emit('room.join', roomId, (res) => {
-        console.log(res);
-        if (res.result) {
-          alert('ROOM ENTERED');
-        } else {
-          alert('Could not enter room');
-        }
-      });
-    });
-    console.log(roomId);
-    console.log('enter room');
+    console.log(`joining room ${roomId}...`);
+    getSocket()
+      .then((socket) => {
+        console.log(socket);
+        socket.emit('room.join', roomId, (res) => {
+          console.log(res);
+          if (res.result) {
+            setRoomId(parseInt(roomId));
+            console.log(`enter room ${roomId}`);
+          } else {
+            alert('Could not enter room');
+          }
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
