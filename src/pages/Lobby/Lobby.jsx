@@ -16,7 +16,7 @@ function Lobby() {
         </div>
         <div className={styles.rightBody}>
           {roomId ? (
-            <Chatting roomId={roomId}></Chatting>
+            <Chatting roomId={roomId} setRoomId={setRoomId}></Chatting>
           ) : (
             <RoomList setRoomId={setRoomId}></RoomList>
           )}

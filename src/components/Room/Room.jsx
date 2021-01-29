@@ -8,7 +8,6 @@ function Room({ room, num, setRoomId }) {
     console.log(`joining room ${roomId}...`);
     getSocket()
       .then((socket) => {
-        console.log(socket);
         socket.emit('room.join', roomId, (res) => {
           console.log(res);
           if (res.result) {
