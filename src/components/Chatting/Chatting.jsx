@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import getSocket from '../../utils/util';
 
 function Chatting({ roomId, setRoomId }) {
   const handleLeave = () => {
     getSocket().then((socket) => {
       socket.emit('room.leave', (res) => {
-        console.log(res);
         if (res.result) {
           setRoomId(null);
         } else {
@@ -14,6 +13,25 @@ function Chatting({ roomId, setRoomId }) {
       });
     });
   };
+
+  useEffect(() => {
+    getSocket().then((socket) => {
+      socket.emit('room.info', (res) => {
+        console.log(res);
+      });
+    });
+
+    return () => {
+      console.log('aa');
+      getSocket().then((socket) => {
+        socket.emit('room.leave', (res) => {
+          if (!res.result) {
+            alert('Failed to leave room');
+          }
+        });
+      });
+    };
+  }, []);
 
   return (
     <div>

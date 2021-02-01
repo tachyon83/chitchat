@@ -27,8 +27,20 @@ function RoomList({ setRoomId }) {
     });
   };
 
+  const refreshRoomList = () => {
+    console.log('refresh room list');
+    getSocket().then((socket) => {
+      console.log('here');
+      socket.on('room.list.refresh', (res) => {
+        console.log('ROOM LIST REFRESH');
+        console.log(res);
+      });
+    });
+  };
+
   useEffect(() => {
     fetchRoomList();
+    refreshRoomList();
   }, []);
 
   const handleNewRoomClick = () => {
