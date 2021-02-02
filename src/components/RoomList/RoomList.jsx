@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import getSocket from '../../utils/util';
 import Room from '../../components/Room/Room';
-import ReactModal from 'react-modal';
-import { useRecoilValue } from 'recoil';
-import { UsernameState } from '../../recoil/atoms';
+import Rodal from 'react-modal';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { UsernameState, RoomListState } from '../../recoil/atoms';
 
 function RoomList({ setRoomId }) {
+  // Recoil Values
   const username = useRecoilValue(UsernameState);
-  const [totalRoomData, setTotalRoomData] = useState([]);
+  const [roomListState, setRoomListState] = useRecoilState(RoomListState);
+
+  // useState Values
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
   const [newRoomData, setNewRoomData] = useState({
     roomTitle: '',
@@ -19,7 +22,8 @@ function RoomList({ setRoomId }) {
     getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
-          setTotalRoomData(res.packet);
+          console.log(res.packet);
+          setRoomListState(res.packet);
         } else {
           alert('Could not get room list');
         }
@@ -27,20 +31,20 @@ function RoomList({ setRoomId }) {
     });
   };
 
-  const refreshRoomList = () => {
-    console.log('refresh room list');
-    getSocket().then((socket) => {
-      console.log('here');
-      socket.on('room.list.refresh', (res) => {
-        console.log('ROOM LIST REFRESH');
-        console.log(res);
-      });
-    });
-  };
+  // const refreshRoomList = () => {
+  //   console.log('refresh room list');
+  //   getSocket().then((socket) => {
+  //     console.log('here');
+  //     socket.on('room.list.refresh', (res) => {
+  //       console.log('ROOM LIST REFRESH');
+  //       console.log(res);
+  //     });
+  //   });
+  // };
 
   useEffect(() => {
     fetchRoomList();
-    refreshRoomList();
+    // refreshRoomList();
   }, []);
 
   const handleNewRoomClick = () => {
@@ -79,7 +83,6 @@ function RoomList({ setRoomId }) {
     getSocket().then((socket) => {
       socket.emit('room.create', roomData, (res) => {
         if (res.result) {
-          alert('방 생성 성공');
           closeNewRoomModal();
           setRoomId(parseInt(res.packet));
         }
@@ -89,7 +92,7 @@ function RoomList({ setRoomId }) {
 
   return (
     <div>
-      <ReactModal
+      <Rodal
         isOpen={showNewRoomModal}
         onRequestClose={closeNewRoomModal}
         ariaHideApp={false}
@@ -118,9 +121,9 @@ function RoomList({ setRoomId }) {
           />
           <button type="submit">Add New Room</button>
         </form>
-      </ReactModal>
+      </Rodal>
       <button onClick={handleNewRoomClick}>New Room +</button>
-      {totalRoomData.map((room, i) => (
+      {roomListState.map((room, i) => (
         <Room key={i} room={room} num={i} setRoomId={setRoomId} />
       ))}
     </div>

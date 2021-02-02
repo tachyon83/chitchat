@@ -41,6 +41,7 @@ function Chatting({ roomId, setRoomId }) {
       roomPw: roomPw || null,
       roomCapacity: parseInt(roomCapacity),
     };
+    console.log(roomDto);
     getSocket().then((socket) => {
       socket.emit('room.update', roomDto, (res) => {
         if (res.result) {
@@ -106,7 +107,7 @@ function Chatting({ roomId, setRoomId }) {
     }
   }, [userUpdate]);
 
-  if (!roomInfo.roomOwner) {
+  if (!roomInfo) {
     return <div>Loading...</div>;
   }
 
