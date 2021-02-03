@@ -24,8 +24,7 @@ function Room({ room, num, setRoomId }) {
     setRoomPwInput(e.target.value);
   };
 
-  const requestRoomJoin = (e) => {
-    e.preventDefault();
+  const requestRoomJoin = () => {
     const roomId = room.roomId;
     const roomDto = {
       roomId,
@@ -46,6 +45,11 @@ function Room({ room, num, setRoomId }) {
       .catch((err) => console.log(err));
   };
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    requestRoomJoin();
+  };
+
   return (
     <div className={styles.room} onClick={handleRoomClick}>
       <Rodal
@@ -53,7 +57,7 @@ function Room({ room, num, setRoomId }) {
         onRequestClose={closeRoomPwModal}
         ariaHideApp={false}
       >
-        <form onSubmit={requestRoomJoin}>
+        <form onSubmit={handleFormSubmit}>
           <label>Password:</label>
           <input
             type="password"

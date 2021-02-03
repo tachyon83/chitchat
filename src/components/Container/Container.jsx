@@ -14,6 +14,7 @@ function Container({ history, children }) {
         if (res.result) {
           history.push('/');
         } else {
+          console.log(res);
           alert('failed to signout');
         }
       })
