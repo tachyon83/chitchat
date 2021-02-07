@@ -13,8 +13,9 @@ import {
 function RoomList({ setRoomId }) {
   // Recoil Values
   const username = useRecoilValue(UsernameState);
-  const [roomListState, setRoomListState] = useRecoilState(RoomListState);
-  const roomListIdState = useRecoilValue(RoomListIdState);
+  const [roomList, setRoomList] = useState([]);
+  // const [roomListState, setRoomListState] = useRecoilState(RoomListState);
+  // const roomListIdState = useRecoilValue(RoomListIdState);
   const [refreshState, setRefreshState] = useRecoilState(RefreshState);
 
   // useState Values
@@ -29,7 +30,7 @@ function RoomList({ setRoomId }) {
     getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
-          setRoomListState(res.packet);
+          setRoomList(res.packet);
         } else {
           alert('Could not get room list');
         }
@@ -40,36 +41,56 @@ function RoomList({ setRoomId }) {
   const refreshRoomList = () => {
     getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
-        const changedRoom = res.packet;
-        const existingRoom =
-          roomListState.filter((room) => room.roomId === changedRoom.roomId)
-            .length > 0;
-        // 기존 방
-        if (existingRoom) {
-          // 기존 방 - 삭제
-          if (changedRoom.roomCnt === 0) {
-            setRoomListState([
-              ...roomListState,
-              roomListState.filter(
-                (room) => room.roomId !== changedRoom.roomId
-              ),
-            ]);
-          } else {
-            // 기존 방 - 업데이트
-            setRoomListState([
-              ...roomListState,
-              roomListState.map((room) => {
-                if (room.roomId === changedRoom.roomId) {
-                  return changedRoom;
-                }
-                return room;
-              }),
-            ]);
-          }
-        } else {
-          // 새로운 방
-          setRoomListState([...roomListState, changedRoom]);
-        }
+        // const changedRoom = res.packet;
+        // const existingRoom =
+        //   roomList.filter((room) => room.roomId === changedRoom.roomId).length >
+        //   0;
+        // console.log('current roomList: ');
+        // console.log(roomList);
+        // console.log('Filter');
+        // console.log(
+        //   roomList.filter((room) => room.roomId === changedRoom.roomId)
+        // );
+        // console.log('existing?');
+        // console.log(existingRoom);
+        // // 기존 방
+        // if (existingRoom) {
+        //   // 기존 방 - 삭제
+        //   if (changedRoom.roomCnt === 0) {
+        //     setRoomList([
+        //       ...roomList,
+        //       roomList.filter((room) => room.roomId !== changedRoom.roomId),
+        //     ]);
+        //     console.log(
+        //       roomList.filter((room) => room.roomId !== changedRoom.roomId)
+        //     );
+        //   } else {
+        //     // 기존 방 - 업데이트
+        //     setRoomList([
+        //       ...roomList,
+        //       roomList.map((room) => {
+        //         if (room.roomId === changedRoom.roomId) {
+        //           return changedRoom;
+        //         }
+        //         return room;
+        //       }),
+        //     ]);
+        //     console.log(
+        //       roomList.map((room) => {
+        //         if (room.roomId === changedRoom.roomId) {
+        //           return changedRoom;
+        //         }
+        //         return room;
+        //       })
+        //     );
+        //   }
+        // } else {
+        //   // 새로운 방
+        //   console.log('This is a new room!');
+        //   setRoomList([...roomList, changedRoom]);
+        //   console.log([...roomList, changedRoom]);
+        // }
+        fetchRoomList();
       });
     });
   };
@@ -161,7 +182,7 @@ function RoomList({ setRoomId }) {
         </form>
       </Rodal>
       <button onClick={handleNewRoomClick}>New Room +</button>
-      {roomListState.map((room, i) => (
+      {roomList.map((room, i) => (
         <Room key={i} room={room} num={i} setRoomId={setRoomId} />
       ))}
     </div>

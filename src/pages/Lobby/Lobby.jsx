@@ -6,7 +6,6 @@ import styles from './lobby.module.scss';
 
 function Lobby() {
   const [roomId, setRoomId] = useState(null);
-  console.log(roomId);
 
   return (
     <Container>

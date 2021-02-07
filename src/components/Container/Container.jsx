@@ -9,12 +9,12 @@ import styles from './container.module.scss';
 function Container({ history, children }) {
   const handleSignout = () => {
     axios
-      .post('/user/signout', { withCredentials: true })
+      .get('/user/signout', { withCredentials: true })
       .then((res) => {
-        if (res.result) {
+        if (res.data.result) {
           history.push('/');
         } else {
-          console.log(res);
+          console.log(res.data);
           alert('failed to signout');
         }
       })
