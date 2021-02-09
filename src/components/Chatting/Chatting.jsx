@@ -8,17 +8,19 @@ import 'rodal/lib/rodal.css';
 function Chatting({ roomId, setRoomId }) {
   const username = useRecoilValue(UsernameState);
   const [roomInfo, setRoomInfo] = useState({});
-  const [userInput, setUserInput] = useState({
+  const [userEditInput, setUserEditInput] = useState({
     roomTitle: '',
     roomPw: '',
     roomCapacity: 0,
   });
   const [userUpdate, setUserUpdate] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatData, setChatData] = useState([]);
 
-  const handleInputChange = (e) => {
+  const handleEditInputChange = (e) => {
     const { name, value } = e.target;
-    setUserInput({ ...userInput, [name]: value });
+    setUserEditInput({ ...userEditInput, [name]: value });
   };
 
   const handleEditButton = () => {
@@ -27,7 +29,7 @@ function Chatting({ roomId, setRoomId }) {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    const { roomTitle, roomPw, roomCapacity } = userInput;
+    const { roomTitle, roomPw, roomCapacity } = userEditInput;
     if (roomTitle === '') {
       alert('Enter a valid name');
       return;
@@ -56,7 +58,7 @@ function Chatting({ roomId, setRoomId }) {
 
   const closeEditModal = () => {
     setShowEditModal(false);
-    setUserInput({
+    setUserEditInput({
       roomTitle: roomInfo.roomTitle,
       roomPw: '',
       roomCapacity: roomInfo.roomCapacity,
@@ -80,9 +82,30 @@ function Chatting({ roomId, setRoomId }) {
       socket.emit('room.info', (res) => {
         setRoomInfo(res.packet);
         const { roomTitle, roomCapacity } = res.packet;
-        setUserInput({ ...userInput, roomTitle, roomCapacity });
+        setUserEditInput({ ...userEditInput, roomTitle, roomCapacity });
       });
     });
+  };
+
+  const handleChatInputChange = (e) => {
+    setChatInput(e.target.value);
+  };
+
+  const handleSendChat = () => {
+    const chatDto = {
+      from: username,
+      to: null,
+      text: chatInput,
+      type: 'all',
+    };
+    console.log(chatDto);
+    getSocket().then((socket) => {
+      socket.emit('chat.out', chatDto, (res) => {
+        console.log(res);
+      });
+    });
+    setChatInput('');
+    setChatData([...chatData, chatDto]);
   };
 
   useEffect(() => {
@@ -107,6 +130,19 @@ function Chatting({ roomId, setRoomId }) {
     }
   }, [userUpdate]);
 
+  useEffect(() => {
+    getSocket().then((socket) => {
+      socket.on('chat.in', (res) => {
+        if (res.result) {
+          console.log(res.packet);
+          setChatData([...chatData, res.packet]);
+        } else {
+          setChatData([...chatData, res]);
+        }
+      });
+    });
+  }, [chatData]);
+
   if (!roomInfo) {
     return <div>Loading...</div>;
   }
@@ -121,6 +157,19 @@ function Chatting({ roomId, setRoomId }) {
         )}
       </p>
 
+      <div>
+        {chatData.map((chat, i) => (
+          <p key={i}>
+            From: {chat.from || 'NULL'}
+            To: {chat.to || 'EVERYONE'}
+            {chat.text}
+          </p>
+        ))}
+      </div>
+
+      <input type="text" value={chatInput} onChange={handleChatInputChange} />
+      <button onClick={handleSendChat}>보내기</button>
+
       {/* Modal */}
       <Rodal visible={showEditModal} onClose={closeEditModal}>
         <form>
@@ -129,8 +178,8 @@ function Chatting({ roomId, setRoomId }) {
             <input
               type="text"
               name="roomTitle"
-              value={userInput.roomTitle}
-              onChange={handleInputChange}
+              value={userEditInput.roomTitle}
+              onChange={handleEditInputChange}
             />
           </div>
           <div>
@@ -138,8 +187,8 @@ function Chatting({ roomId, setRoomId }) {
             <input
               type="password"
               name="roomPw"
-              value={userInput.roomPw}
-              onChange={handleInputChange}
+              value={userEditInput.roomPw}
+              onChange={handleEditInputChange}
             />
           </div>
           <div>
@@ -147,8 +196,8 @@ function Chatting({ roomId, setRoomId }) {
             <input
               type="number"
               name="roomCapacity"
-              value={userInput.roomCapacity}
-              onChange={handleInputChange}
+              value={userEditInput.roomCapacity}
+              onChange={handleEditInputChange}
             />
           </div>
           <button type="submit" onClick={handleEditSubmit}>
