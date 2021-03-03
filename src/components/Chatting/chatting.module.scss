@@ -1,0 +1,48 @@
+.container {
+  padding-right: 2em;
+}
+
+.topDesc {
+  display: flex;
+  padding-bottom: 2em;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  button {
+    padding: 0.3em 0.7em;
+    margin-right: 1em;
+    background-color: #6c2e8b;
+    color: white;
+    border-radius: 0.7em;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 10px;
+    cursor: pointer;
+  }
+}
+
+.chattingContainer {
+}
+
+.inputWrapper {
+  margin-top: 2em;
+  position: relative;
+  height: 2em;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+
+  div {
+    flex: 1;
+  }
+
+  input {
+    flex: 8;
+  }
+
+  button {
+    flex: 1;
+  }
+}

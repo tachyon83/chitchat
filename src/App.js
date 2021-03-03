@@ -5,6 +5,7 @@ import Signin from './pages/Signin/Signin';
 import Signup from './pages/Signup/Signup';
 import Main from './pages/Main/Main';
 import { RecoilRoot } from 'recoil';
+import AuthRoute from './utils/AuthRoute';
 import axios from 'axios';
 const host = require('./host');
 axios.defaults.baseURL = host.SERVER;
@@ -14,10 +15,18 @@ function App() {
     <RecoilRoot>
       <Router>
         <Switch>
-          <Route exact path="/" component={Signin} />
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/main" component={Main} />
-          <Route exact path="/lobby" component={Lobby} />
+          <AuthRoute privateRoute={false} exact path="/">
+            <Signin />
+          </AuthRoute>
+          <AuthRoute privateRoute={false} exact path="/signup">
+            <Signup />
+          </AuthRoute>
+          <AuthRoute privateRoute={true} exact path="/main">
+            <Main />
+          </AuthRoute>
+          <AuthRoute privateRoute={true} exact path="/lobby">
+            <Lobby />
+          </AuthRoute>
         </Switch>
       </Router>
     </RecoilRoot>

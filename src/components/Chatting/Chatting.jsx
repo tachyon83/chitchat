@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import getSocket from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
+import styles from './chatting.module.scss';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
+import Chat from '../Chat/Chat';
 
 function Chatting({ roomId, setRoomId }) {
   const username = useRecoilValue(UsernameState);
@@ -24,6 +26,8 @@ function Chatting({ roomId, setRoomId }) {
   };
 
   const handleEditButton = () => {
+    getRoomInfo();
+    console.log(roomInfo.roomOwner);
     setShowEditModal(true);
   };
 
@@ -91,7 +95,9 @@ function Chatting({ roomId, setRoomId }) {
     setChatInput(e.target.value);
   };
 
-  const handleSendChat = () => {
+  const handleSendChat = (e) => {
+    e.preventDefault();
+
     const chatDto = {
       from: username,
       to: null,
@@ -148,27 +154,36 @@ function Chatting({ roomId, setRoomId }) {
   }
 
   return (
-    <div>
-      <button onClick={handleLeave}>Leave room</button>
-      <p>Currently in room {roomId}</p>
-      <p>
-        {roomInfo.roomOwner === username && (
-          <button onClick={handleEditButton}>정보 바꾸기</button>
-        )}
-      </p>
-
-      <div>
-        {chatData.map((chat, i) => (
-          <p key={i}>
-            From: {chat.from || 'NULL'}
-            To: {chat.to || 'EVERYONE'}
-            {chat.text}
-          </p>
-        ))}
+    <div className={styles.container}>
+      <p>Currently in Room {roomId}</p>
+      <div className={styles.topDesc}>
+        <button onClick={handleLeave} className={styles.leaveButton}>
+          Leave Room
+        </button>
+        <button onClick={handleEditButton}>정보 바꾸기 (버튼 수정하기)</button>
       </div>
 
-      <input type="text" value={chatInput} onChange={handleChatInputChange} />
-      <button onClick={handleSendChat}>보내기</button>
+      <div className={styles.chattingContainer}>
+        <div>
+          {chatData.map((chat, i) => (
+            <Chat key={i} chat={chat} />
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.inputWrapper}>
+        <form onSubmit={handleSendChat}>
+          <div>Group</div>
+          <input
+            type="text"
+            value={chatInput}
+            onChange={handleChatInputChange}
+          />
+          <button type="submit" onClick={handleSendChat}>
+            Send
+          </button>
+        </form>
+      </div>
 
       {/* Modal */}
       <Rodal visible={showEditModal} onClose={closeEditModal}>

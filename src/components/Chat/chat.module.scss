@@ -1,0 +1,24 @@
+.system {
+  color: grey;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.7em;
+}
+
+.myChat {
+  text-align: right;
+  margin-bottom: 0.7em;
+}
+
+.otherChat {
+  margin-bottom: 0.7em;
+  padding: 0.3em 0.7em;
+  background-color: #6c2e8b;
+  color: white;
+  border-radius: 0.7em;
+
+  .otherChatFrom {
+    font-size: 14px;
+    color: rgb(160, 160, 160);
+  }
+}

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import getSocket from '../../utils/util';
 import Room from '../../components/Room/Room';
-import Rodal from 'react-modal';
+import Rodal from 'rodal';
+import 'rodal/lib/rodal.css';
+import styles from './roomlist.module.scss';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import {
-  UsernameState,
-  RoomListState,
-  RoomListIdState,
-  RefreshState,
-} from '../../recoil/atoms';
+import { UsernameState, RefreshState } from '../../recoil/atoms';
 
 function RoomList({ setRoomId }) {
   // Recoil Values
@@ -41,55 +38,6 @@ function RoomList({ setRoomId }) {
   const refreshRoomList = () => {
     getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
-        // const changedRoom = res.packet;
-        // const existingRoom =
-        //   roomList.filter((room) => room.roomId === changedRoom.roomId).length >
-        //   0;
-        // console.log('current roomList: ');
-        // console.log(roomList);
-        // console.log('Filter');
-        // console.log(
-        //   roomList.filter((room) => room.roomId === changedRoom.roomId)
-        // );
-        // console.log('existing?');
-        // console.log(existingRoom);
-        // // 기존 방
-        // if (existingRoom) {
-        //   // 기존 방 - 삭제
-        //   if (changedRoom.roomCnt === 0) {
-        //     setRoomList([
-        //       ...roomList,
-        //       roomList.filter((room) => room.roomId !== changedRoom.roomId),
-        //     ]);
-        //     console.log(
-        //       roomList.filter((room) => room.roomId !== changedRoom.roomId)
-        //     );
-        //   } else {
-        //     // 기존 방 - 업데이트
-        //     setRoomList([
-        //       ...roomList,
-        //       roomList.map((room) => {
-        //         if (room.roomId === changedRoom.roomId) {
-        //           return changedRoom;
-        //         }
-        //         return room;
-        //       }),
-        //     ]);
-        //     console.log(
-        //       roomList.map((room) => {
-        //         if (room.roomId === changedRoom.roomId) {
-        //           return changedRoom;
-        //         }
-        //         return room;
-        //       })
-        //     );
-        //   }
-        // } else {
-        //   // 새로운 방
-        //   console.log('This is a new room!');
-        //   setRoomList([...roomList, changedRoom]);
-        //   console.log([...roomList, changedRoom]);
-        // }
         fetchRoomList();
       });
     });
@@ -151,40 +99,48 @@ function RoomList({ setRoomId }) {
 
   return (
     <div>
-      <Rodal
-        isOpen={showNewRoomModal}
-        onRequestClose={closeNewRoomModal}
-        ariaHideApp={false}
-      >
-        <form onSubmit={handleAddNewRoom}>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="roomTitle"
-            value={newRoomData.roomTitle}
-            onChange={handleNewRoomInputChange}
-          />
-          <label>Password:</label>
-          <input
-            type="password"
-            name="roomPw"
-            value={newRoomData.roomPw}
-            onChange={handleNewRoomInputChange}
-          />
-          <label>Capacity:</label>
-          <input
-            type="text"
-            name="roomCapacity"
-            value={newRoomData.roomCapacity}
-            onChange={handleNewRoomInputChange}
-          />
-          <button type="submit">Add New Room</button>
-        </form>
-      </Rodal>
-      <button onClick={handleNewRoomClick}>New Room +</button>
+      <button className={styles.newRoomButton} onClick={handleNewRoomClick}>
+        New Room +
+      </button>
       {roomList.map((room, i) => (
         <Room key={i} room={room} num={i} setRoomId={setRoomId} />
       ))}
+
+      <Rodal visible={showNewRoomModal} onClose={closeNewRoomModal}>
+        <form onSubmit={handleAddNewRoom} className={styles.newRoomModalForm}>
+          <div className={styles.row}>
+            <label>Name:</label>
+            <input
+              type="text"
+              name="roomTitle"
+              value={newRoomData.roomTitle}
+              onChange={handleNewRoomInputChange}
+              placeholder={'Enter room name'}
+            />
+          </div>
+          <div className={styles.row}>
+            <label>Password:</label>
+            <input
+              type="password"
+              name="roomPw"
+              value={newRoomData.roomPw}
+              onChange={handleNewRoomInputChange}
+              placeholder={'Enter room password'}
+            />
+          </div>
+          <div className={styles.row}>
+            <label>Capacity:</label>
+            <input
+              type="text"
+              name="roomCapacity"
+              value={newRoomData.roomCapacity}
+              onChange={handleNewRoomInputChange}
+              placeholder={'Enter room capacity'}
+            />
+          </div>
+          <button type="submit">Add New Room</button>
+        </form>
+      </Rodal>
     </div>
   );
 }

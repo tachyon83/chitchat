@@ -67,11 +67,13 @@ function Room({ room, num, setRoomId }) {
           <button type="submit">Enter room</button>
         </form>
       </Rodal>
-      {room.roomPw && <p>Locked</p>}
-      <p>{num + 1}</p>
-      <p>{room.roomTitle}</p>
-      <p>{room.roomOwner}</p>
-      <p>
+
+      <p className={styles.roomNum}>00{num + 1}</p>
+      <p className={styles.roomTitle}>
+        {room.roomTitle} {room.roomPw && <span>Locked</span>}
+      </p>
+      <p className={styles.roomOwner}>{room.roomOwner}</p>
+      <p className={styles.roomCount}>
         {room.roomCnt} / {room.roomCapacity}
       </p>
     </div>

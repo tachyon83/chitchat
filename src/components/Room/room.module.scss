@@ -1,13 +1,28 @@
 .room {
   display: flex;
+  justify-content: space-between;
   background-color: #8c3fab;
   color: white;
   border-radius: 0.5em;
-  padding-left: 1em;
+  padding-left: 2em;
   padding-right: 1em;
+  margin-bottom: 1em;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 10px;
   cursor: pointer;
 
-  p {
+  .roomNum {
+    flex: 1;
+  }
+
+  .roomTitle {
+    flex: 6;
+  }
+
+  .roomOwner {
+    flex: 1;
+  }
+
+  .roomCount {
     flex: 1;
   }
 }

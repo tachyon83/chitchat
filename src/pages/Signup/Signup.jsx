@@ -5,9 +5,9 @@ import axios from 'axios';
 import styles from './signup.module.scss';
 
 function Signup({ history }) {
-  const [input, setInput] = useState({ id: '', password: '', nick: '' });
+  const [input, setInput] = useState({ id: '', password: '' });
   const [idPass, setIdPass] = useState(false);
-  const { id, password, nick } = input;
+  const { id, password } = input;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +37,7 @@ function Signup({ history }) {
       alert('check your username first');
       return;
     }
-    if (id === '' || password === '' || nick === '') {
+    if (id === '' || password === '') {
       alert('missing');
       return;
     }
@@ -72,16 +72,6 @@ function Signup({ history }) {
             name="password"
             value={password}
             onChange={handleInputChange}
-          />
-        </div>
-        <div className={styles.inputBox}>
-          <input
-            type="text"
-            placeholder="Nickname"
-            name="nick"
-            value={nick}
-            onChange={handleInputChange}
-            autoComplete="off"
           />
         </div>
         <div className={styles.buttonContainer}>
