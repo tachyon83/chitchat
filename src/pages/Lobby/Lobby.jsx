@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Container from '../../components/Container/Container';
 import Chatting from '../../components/Chatting/Chatting';
 import RoomList from '../../components/RoomList/RoomList';
+import getSocket from '../../utils/util';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import styles from './lobby.module.scss';
@@ -9,9 +10,7 @@ import styles from './lobby.module.scss';
 function Lobby() {
   const [roomId, setRoomId] = useState(null);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
-  const [newGroupData, setNewGroupData] = useState({
-    // 새로운 그룹 정보
-  });
+  const [newGroupName, setNewGroupName] = useState('');
 
   const handleCreateNewGroup = () => {
     setShowNewGroupModal(true);
@@ -19,12 +18,26 @@ function Lobby() {
 
   const handleAddNewGroup = (e) => {
     e.preventDefault();
-    // Handle Add New Room
-    // user.createGroup 사용하기
+    if (!newGroupName) {
+      alert('Fill in the blank');
+      return;
+    }
+    getSocket().then((socket) => {
+      socket.emit('user.createGroup', newGroupName, (res) => {
+        if (res.result) {
+          closeNewGroupModal();
+        }
+      });
+    });
+  };
+
+  const handleNewGroupInputChange = (e) => {
+    setNewGroupName(e.target.value);
   };
 
   const closeNewGroupModal = () => {
     setShowNewGroupModal(false);
+    setNewGroupName('');
   };
 
   return (
@@ -32,7 +45,12 @@ function Lobby() {
       <div className={styles.body}>
         <div className={styles.sidebar}>
           <div>
-            <button onClick={handleCreateNewGroup}>New Group +</button>
+            <button
+              onClick={handleCreateNewGroup}
+              className={styles.newGroupButton}
+            >
+              New Group +
+            </button>
           </div>
         </div>
         <div className={styles.rightBody}>
@@ -44,7 +62,18 @@ function Lobby() {
         </div>
       </div>
       <Rodal visible={showNewGroupModal} onClose={closeNewGroupModal}>
-        <form onSubmit={handleAddNewGroup}>form</form>
+        <form onSubmit={handleAddNewGroup} className={styles.newGroupModalForm}>
+          <div className={styles.row}>
+            <label>Name:</label>
+            <input
+              type="text"
+              value={newGroupName}
+              onChange={handleNewGroupInputChange}
+              placeholder={'Enter group name'}
+            />
+          </div>
+          <button type="submit">Add New Group</button>
+        </form>
       </Rodal>
     </Container>
   );
