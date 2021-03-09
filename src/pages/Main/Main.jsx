@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../components/Container/Container';
+import getSocket from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import { withRouter } from 'react-router';
@@ -8,15 +9,31 @@ import styles from './main.module.scss';
 
 function Main() {
   const username = useRecoilValue(UsernameState);
+  const [currentGroup, setCurrentGroup] = useState('');
+
+  const fetchUserInfo = () => {
+    console.log('fetch user info function');
+    getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        setCurrentGroup(res.packet.groupId);
+        console.log(res.packet);
+      });
+    });
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   return (
     <Container>
       <div>
         <img src={ChattingImage} alt="chatting" className={styles.image} />
         <p className={styles.text}>
-          <span className={styles.name}>{username}</span> 님<br />
-          기다리고 있었어요!
+          Welcome,
+          <span className={styles.name}>{username}</span>!
         </p>
+        {currentGroup && <p>Current Group: {currentGroup}</p>}
       </div>
     </Container>
   );
