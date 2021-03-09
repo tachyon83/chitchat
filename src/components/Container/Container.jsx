@@ -3,18 +3,25 @@ import HomeIcon from '../../assets/menu-icon-home.png';
 import ChatIcon from '../../assets/menu-icon-chat.png';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styles from './container.module.scss';
+import { useSetRecoilState } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 
-function Container({ history, children }) {
+function Container({ children }) {
+  const history = useHistory();
+  const setUsernameState = useSetRecoilState(UsernameState);
+
   const handleSignout = () => {
     axios
       .get('/user/signout', { withCredentials: true })
       .then((res) => {
+        console.log(res.data);
         if (res.data.result) {
-          history.push('/');
+          setUsernameState('');
+          history.push('/signin');
         } else {
-          console.log(res.data);
           alert('failed to signout');
         }
       })

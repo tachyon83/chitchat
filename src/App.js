@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
 import Lobby from './pages/Lobby/Lobby';
 import Signin from './pages/Signin/Signin';
 import Signup from './pages/Signup/Signup';
@@ -15,7 +20,10 @@ function App() {
     <RecoilRoot>
       <Router>
         <Switch>
-          <AuthRoute privateRoute={false} exact path="/">
+          <Route exact path="/">
+            {<Redirect to="/signin" />}
+          </Route>
+          <AuthRoute privateRoute={false} exact path="/signin">
             <Signin />
           </AuthRoute>
           <AuthRoute privateRoute={false} exact path="/signup">

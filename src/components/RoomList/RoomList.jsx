@@ -27,6 +27,8 @@ function RoomList({ setRoomId }) {
     getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
+          console.log('fetching room list');
+          console.log(res.packet);
           setRoomList(res.packet);
         } else {
           alert('Could not get room list');
@@ -38,6 +40,7 @@ function RoomList({ setRoomId }) {
   const refreshRoomList = () => {
     getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
+        console.log('room list refresh');
         fetchRoomList();
       });
     });
