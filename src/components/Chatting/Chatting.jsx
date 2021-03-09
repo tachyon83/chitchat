@@ -26,9 +26,19 @@ function Chatting({ roomId, setRoomId }) {
   };
 
   const handleEditButton = () => {
-    getRoomInfo();
-    console.log(roomInfo.roomOwner);
-    setShowEditModal(true);
+    getSocket().then((socket) => {
+      socket.emit('room.info', (res) => {
+        setRoomInfo(res.packet);
+        const { roomTitle, roomCapacity } = res.packet;
+        setUserEditInput({ ...userEditInput, roomTitle, roomCapacity });
+        if (res.packet.roomOwner !== username) {
+          alert("You don't have access.");
+          return;
+        } else {
+          setShowEditModal(true);
+        }
+      });
+    });
   };
 
   const handleEditSubmit = (e) => {
@@ -47,7 +57,6 @@ function Chatting({ roomId, setRoomId }) {
       roomPw: roomPw || null,
       roomCapacity: parseInt(roomCapacity),
     };
-    console.log(roomDto);
     getSocket().then((socket) => {
       socket.emit('room.update', roomDto, (res) => {
         if (res.result) {
@@ -160,7 +169,7 @@ function Chatting({ roomId, setRoomId }) {
         <button onClick={handleLeave} className={styles.leaveButton}>
           Leave Room
         </button>
-        <button onClick={handleEditButton}>정보 바꾸기 (버튼 수정하기)</button>
+        <button onClick={handleEditButton}>Edit Room</button>
       </div>
 
       <div className={styles.chattingContainer}>
