@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from '../../components/Container/Container';
 import Chatting from '../../components/Chatting/Chatting';
 import RoomList from '../../components/RoomList/RoomList';
@@ -22,11 +22,33 @@ function Lobby() {
       alert('Fill in the blank');
       return;
     }
+
+    getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        if (res.packet.groupId) {
+          alert('You are already in a group');
+          return;
+        }
+      });
+    });
+
     getSocket().then((socket) => {
       socket.emit('user.createGroup', newGroupName, (res) => {
         if (res.result) {
           closeNewGroupModal();
+        } else {
+          alert('Unable to create a group with the following group name.');
+          setNewGroupName('');
         }
+      });
+    });
+  };
+
+  const fetchUserList = () => {
+    console.log('fetching user list');
+    getSocket().then((socket) => {
+      socket.emit('user.list', (res) => {
+        console.log(res);
       });
     });
   };
@@ -39,6 +61,10 @@ function Lobby() {
     setShowNewGroupModal(false);
     setNewGroupName('');
   };
+
+  useEffect(() => {
+    fetchUserList();
+  }, []);
 
   return (
     <Container>

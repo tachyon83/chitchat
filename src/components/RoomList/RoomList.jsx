@@ -11,8 +11,6 @@ function RoomList({ setRoomId }) {
   // Recoil Values
   const username = useRecoilValue(UsernameState);
   const [roomList, setRoomList] = useState([]);
-  // const [roomListState, setRoomListState] = useRecoilState(RoomListState);
-  // const roomListIdState = useRecoilValue(RoomListIdState);
   const [refreshState, setRefreshState] = useRecoilState(RefreshState);
 
   // useState Values
@@ -27,9 +25,9 @@ function RoomList({ setRoomId }) {
     getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
+          setRoomList(res.packet);
           console.log('fetching room list');
           console.log(res.packet);
-          setRoomList(res.packet);
         } else {
           alert('Could not get room list');
         }
@@ -105,6 +103,7 @@ function RoomList({ setRoomId }) {
       <button className={styles.newRoomButton} onClick={handleNewRoomClick}>
         New Room +
       </button>
+      {console.log(roomList)}
       {roomList.map((room, i) => (
         <Room key={i} room={room} num={i} setRoomId={setRoomId} />
       ))}

@@ -21,6 +21,18 @@ function Main() {
     });
   };
 
+  const leaveGroup = () => {
+    getSocket().then((socket) => {
+      socket.emit('user.disjoinGroup', (res) => {
+        if (res.result) {
+          fetchUserInfo();
+        } else {
+          alert('Failed to leave group');
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     fetchUserInfo();
   }, []);
@@ -34,6 +46,9 @@ function Main() {
           <span className={styles.name}>{username}</span>!
         </p>
         {currentGroup && <p>Current Group: {currentGroup}</p>}
+        {currentGroup && (
+          <button onClick={leaveGroup}>Leave Current Group</button>
+        )}
       </div>
     </Container>
   );
