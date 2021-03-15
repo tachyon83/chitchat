@@ -14,7 +14,16 @@ function Lobby() {
   const [userList, setUserList] = useState([]);
 
   const handleCreateNewGroup = () => {
-    setShowNewGroupModal(true);
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        if (res.packet.groupId) {
+          alert('You are already in a group');
+          return;
+        } else {
+          setShowNewGroupModal(true);
+        }
+      });
+    });
   };
 
   const handleAddNewGroup = (e) => {
@@ -23,15 +32,6 @@ function Lobby() {
       alert('Fill in the blank');
       return;
     }
-
-    socketIo.getSocket().then((socket) => {
-      socket.emit('user.read', (res) => {
-        if (res.packet.groupId) {
-          alert('You are already in a group');
-          return;
-        }
-      });
-    });
 
     socketIo.getSocket().then((socket) => {
       socket.emit('user.createGroup', newGroupName, (res) => {

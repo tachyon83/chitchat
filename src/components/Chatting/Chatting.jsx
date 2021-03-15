@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import socketIo from '../../utils/util';
-import { useRecoilValue } from 'recoil';
-import { UsernameState } from '../../recoil/atoms';
 import styles from './chatting.module.scss';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
 
 function Chatting({ roomId, setRoomId }) {
-  const username = useRecoilValue(UsernameState);
+  const username = localStorage.getItem('username');
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
     roomTitle: '',

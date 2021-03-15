@@ -1,10 +1,8 @@
 import React from 'react';
 import styles from './chat.module.scss';
-import { useRecoilValue } from 'recoil';
-import { UsernameState } from '../../recoil/atoms';
 
 function Chat({ chat }) {
-  const username = useRecoilValue(UsernameState);
+  const username = localStorage.getItem('username');
 
   if (chat.from === null) {
     return (

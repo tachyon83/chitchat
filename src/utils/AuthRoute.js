@@ -1,14 +1,15 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { UsernameState } from '../recoil/atoms';
 
 function AuthRoute({ privateRoute, children, ...rest }) {
-  const username = useRecoilValue(UsernameState);
+  const username = localStorage.getItem('username');
 
   const checkAuth = () => {
-    return username !== '';
+    console.log(username);
+    return username;
   };
+
+  console.log('auth route');
 
   if (privateRoute) {
     return (
