@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Container from '../../components/Container/Container';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import { withRouter } from 'react-router';
@@ -13,8 +13,9 @@ function Main() {
 
   const fetchUserInfo = () => {
     console.log('fetch user info function');
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
+        console.log('USER READ');
         setCurrentGroup(res.packet.groupId);
         console.log(res.packet);
       });
@@ -22,7 +23,7 @@ function Main() {
   };
 
   const leaveGroup = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('user.disjoinGroup', (res) => {
         if (res.result) {
           fetchUserInfo();
@@ -34,6 +35,7 @@ function Main() {
   };
 
   useEffect(() => {
+    console.log('MAIN USE EFFECT');
     fetchUserInfo();
   }, []);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import Room from '../../components/Room/Room';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
@@ -22,7 +22,7 @@ function RoomList({ setRoomId }) {
   });
 
   const fetchRoomList = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
           setRoomList(res.packet);
@@ -36,7 +36,7 @@ function RoomList({ setRoomId }) {
   };
 
   const refreshRoomList = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
         console.log('room list refresh');
         fetchRoomList();
@@ -88,7 +88,7 @@ function RoomList({ setRoomId }) {
       roomCapacity,
       roomOwner: username,
     };
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.create', roomData, (res) => {
         if (res.result) {
           closeNewRoomModal();

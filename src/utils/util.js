@@ -17,7 +17,11 @@ const socketIo = (function () {
       }
       return socket;
     },
+    removeSocket: function () {
+      socket = null;
+      console.log('Removing socket');
+    },
   };
 })();
 
-export default socketIo.getSocket;
+export default socketIo;

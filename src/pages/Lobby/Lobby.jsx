@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Container from '../../components/Container/Container';
 import Chatting from '../../components/Chatting/Chatting';
 import RoomList from '../../components/RoomList/RoomList';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import styles from './lobby.module.scss';
@@ -11,6 +11,7 @@ function Lobby() {
   const [roomId, setRoomId] = useState(null);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
+  const [userList, setUserList] = useState([]);
 
   const handleCreateNewGroup = () => {
     setShowNewGroupModal(true);
@@ -23,7 +24,7 @@ function Lobby() {
       return;
     }
 
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
         if (res.packet.groupId) {
           alert('You are already in a group');
@@ -32,7 +33,7 @@ function Lobby() {
       });
     });
 
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('user.createGroup', newGroupName, (res) => {
         if (res.result) {
           closeNewGroupModal();
@@ -45,10 +46,16 @@ function Lobby() {
   };
 
   const fetchUserList = () => {
-    console.log('fetching user list');
-    getSocket().then((socket) => {
+    console.log('FETCH USER LIST FUNCTION');
+    socketIo.getSocket().then((socket) => {
       socket.emit('user.list', (res) => {
-        console.log(res);
+        console.log('fetching user list');
+        console.log('fetching user list');
+        console.log('fetching user list');
+        if (res.result) {
+          console.log(res.packet);
+          setUserList(res.packet);
+        }
       });
     });
   };
@@ -77,6 +84,11 @@ function Lobby() {
             >
               New Group +
             </button>
+            <div>
+              {userList.map((user) => (
+                <p key={user}>{user}</p>
+              ))}
+            </div>
           </div>
         </div>
         <div className={styles.rightBody}>

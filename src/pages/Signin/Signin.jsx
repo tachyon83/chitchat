@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import axios from 'axios';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import { useSetRecoilState } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import styles from './signin.module.scss';
@@ -29,7 +29,8 @@ function Signin({ history }) {
       .then(async (res) => {
         if (res.data.result) {
           setUsernameState(res.data.packet);
-          await getSocket();
+          await socketIo.getSocket();
+          console.log('SIGN IN');
           history.push('/main');
         } else {
           alert('Incorrect username or password.');

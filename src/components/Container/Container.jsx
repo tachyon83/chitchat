@@ -4,6 +4,7 @@ import ChatIcon from '../../assets/menu-icon-chat.png';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
+import socketIo from '../../utils/util';
 import axios from 'axios';
 import styles from './container.module.scss';
 import { useSetRecoilState } from 'recoil';
@@ -20,6 +21,7 @@ function Container({ children }) {
         console.log(res.data);
         if (res.data.result) {
           setUsernameState('');
+          socketIo.removeSocket();
           history.push('/signin');
         } else {
           alert('failed to signout');

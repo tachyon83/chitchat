@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import Rodal from 'react-modal';
 import styles from './room.module.scss';
 
@@ -30,7 +30,8 @@ function Room({ room, num, setRoomId }) {
       roomId,
       roomPw: room.roomPw ? roomPwInput : null,
     };
-    getSocket()
+    socketIo
+      .getSocket()
       .then((socket) => {
         socket.emit('room.join', roomDto, (res) => {
           console.log(res);

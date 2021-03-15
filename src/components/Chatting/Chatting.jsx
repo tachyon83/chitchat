@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getSocket from '../../utils/util';
+import socketIo from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import styles from './chatting.module.scss';
@@ -26,7 +26,7 @@ function Chatting({ roomId, setRoomId }) {
   };
 
   const handleEditButton = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.info', (res) => {
         setRoomInfo(res.packet);
         const { roomTitle, roomCapacity } = res.packet;
@@ -57,7 +57,7 @@ function Chatting({ roomId, setRoomId }) {
       roomPw: roomPw || null,
       roomCapacity: parseInt(roomCapacity),
     };
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.update', roomDto, (res) => {
         if (res.result) {
           closeEditModal();
@@ -79,7 +79,7 @@ function Chatting({ roomId, setRoomId }) {
   };
 
   const handleLeave = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.leave', (res) => {
         if (res.result) {
           setRoomId(null);
@@ -91,7 +91,7 @@ function Chatting({ roomId, setRoomId }) {
   };
 
   const getRoomInfo = () => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('room.info', (res) => {
         setRoomInfo(res.packet);
         const { roomTitle, roomCapacity } = res.packet;
@@ -114,7 +114,7 @@ function Chatting({ roomId, setRoomId }) {
       type: 'all',
     };
     console.log(chatDto);
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
         console.log(res);
       });
@@ -127,7 +127,7 @@ function Chatting({ roomId, setRoomId }) {
     getRoomInfo();
 
     return () => {
-      getSocket().then((socket) => {
+      socketIo.getSocket().then((socket) => {
         socket.emit('room.leave', (res) => {
           if (!res.result) {
             alert('Failed to leave room');
@@ -146,7 +146,7 @@ function Chatting({ roomId, setRoomId }) {
   }, [userUpdate]);
 
   useEffect(() => {
-    getSocket().then((socket) => {
+    socketIo.getSocket().then((socket) => {
       socket.on('chat.in', (res) => {
         if (res.result) {
           console.log(res.packet);
