@@ -7,9 +7,12 @@ import { useHistory } from 'react-router-dom';
 import socketIo from '../../utils/util';
 import axios from 'axios';
 import styles from './container.module.scss';
+import { useSetRecoilState } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 
 function Container({ children }) {
   const history = useHistory();
+  const setUsernameState = useSetRecoilState(UsernameState);
 
   const handleSignout = () => {
     axios
@@ -17,7 +20,7 @@ function Container({ children }) {
       .then((res) => {
         console.log(res.data);
         if (res.data.result) {
-          localStorage.setItem('username', '');
+          setUsernameState('');
           socketIo.removeSocket();
           history.push('/signin');
         } else {

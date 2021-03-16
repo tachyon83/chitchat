@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import socketIo from '../../utils/util';
+import { useSetRecoilState } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 import styles from './signin.module.scss';
 
 function Signin({ history }) {
+  const setUsernameState = useSetRecoilState(UsernameState);
   const [input, setInput] = useState({ username: '', password: '' });
   const { username, password } = input;
 
@@ -25,16 +28,15 @@ function Signin({ history }) {
       .post('/user/signin', input, { withCredentials: true })
       .then((res) => {
         if (res.data.result) {
+          const username = res.data.packet;
           socketIo.getSocket().then((socket) => {
-            localStorage.setItem('username', res.data.packet);
-            console.log('socket is ready');
-            if (socket) {
-              console.log('SIGN IN');
-              console.log(socket);
-              history.push('/main');
-            } else {
-              alert('Failed to sign in');
-            }
+            socket.on('socket.ready', (res, cb) => {
+              console.log('socket is ready');
+              if (res) {
+                cb('Socket is connected');
+                setUsernameState(username);
+              }
+            });
           });
         } else {
           alert('Incorrect username or password.');

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Container from '../../components/Container/Container';
 import socketIo from '../../utils/util';
+import { useRecoilValue } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 import { withRouter } from 'react-router';
 import ChattingImage from '../../assets/room-wrap-bg.png';
 import styles from './main.module.scss';
 
 function Main() {
-  const username = localStorage.getItem('username');
+  const username = useRecoilValue(UsernameState);
   const [currentGroup, setCurrentGroup] = useState('');
 
   const fetchUserInfo = () => {
@@ -14,7 +16,6 @@ function Main() {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
         console.log('USER READ');
-        localStorage.setItem('username', res.packet.id);
         setCurrentGroup(res.packet.groupId);
         console.log(res.packet);
       });
