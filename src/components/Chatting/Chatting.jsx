@@ -9,7 +9,6 @@ import Chat from '../Chat/Chat';
 
 function Chatting({ roomId, setRoomId }) {
   const username = useRecoilValue(UsernameState);
-
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
     roomTitle: '',
@@ -18,8 +17,15 @@ function Chatting({ roomId, setRoomId }) {
   });
   const [userUpdate, setUserUpdate] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [sendTo, setSendTo] = useState('all');
   const [chatInput, setChatInput] = useState('');
   const [chatData, setChatData] = useState([]);
+
+  const chatType = [
+    { id: 'all', name: 'All' },
+    { id: 'group', name: 'Group' },
+    { id: 'whisper', name: 'Whisper' },
+  ];
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +111,10 @@ function Chatting({ roomId, setRoomId }) {
     setChatInput(e.target.value);
   };
 
+  const setSendSelect = (e) => {
+    setSendTo(e.target.value);
+  };
+
   const handleSendChat = (e) => {
     e.preventDefault();
 
@@ -112,9 +122,11 @@ function Chatting({ roomId, setRoomId }) {
       from: username,
       to: null,
       text: chatInput,
-      type: 'all',
+      type: sendTo,
     };
+
     console.log(chatDto);
+
     socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
         console.log(res);
@@ -183,7 +195,13 @@ function Chatting({ roomId, setRoomId }) {
 
       <div className={styles.inputWrapper}>
         <form onSubmit={handleSendChat}>
-          <div>Group</div>
+          <select value={sendTo} onChange={setSendSelect}>
+            {chatType.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value={chatInput}

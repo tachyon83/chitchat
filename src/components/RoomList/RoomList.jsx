@@ -18,13 +18,10 @@ function RoomList({ setRoomId }) {
   });
 
   const fetchRoomList = () => {
-    console.log('Fetch Room List function');
     socketIo.getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
           setRoomList(res.packet);
-          console.log('Fetched room list');
-          console.log(res.packet);
         } else {
           alert('Could not get room list');
         }
@@ -33,7 +30,6 @@ function RoomList({ setRoomId }) {
   };
 
   const refreshRoomList = () => {
-    console.log('Refresh room list function');
     socketIo.getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
         fetchRoomList();

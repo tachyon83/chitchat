@@ -21,7 +21,6 @@ function Signup({ history }) {
     axios
       .get(`/user/idcheck/${id}`)
       .then((res) => {
-        console.log(res.data);
         if (res.data.result) {
           alert('username pass');
           setIdPass(true);
