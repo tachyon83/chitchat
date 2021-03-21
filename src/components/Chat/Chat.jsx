@@ -57,6 +57,7 @@ function Chat({ chat }) {
   }
 
   if (chat.to === null) {
+    // 본인이 보낸 채팅
     if (chat.from === username) {
       return <div className={styles.myChat}>{chat.text}</div>;
     } else {
