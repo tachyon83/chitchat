@@ -46,14 +46,9 @@ function Lobby() {
   };
 
   const fetchUserList = () => {
-    console.log('FETCH USER LIST FUNCTION');
     socketIo.getSocket().then((socket) => {
       socket.emit('user.list', (res) => {
-        console.log('fetching user list');
-        console.log('fetching user list');
-        console.log('fetching user list');
         if (res.result) {
-          console.log(res.packet);
           setUserList(res.packet);
         }
       });

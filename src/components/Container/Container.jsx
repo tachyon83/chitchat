@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HomeIcon from '../../assets/menu-icon-home.png';
 import ChatIcon from '../../assets/menu-icon-chat.png';
 import { Link } from 'react-router-dom';

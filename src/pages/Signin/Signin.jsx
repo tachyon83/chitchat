@@ -31,7 +31,6 @@ function Signin({ history }) {
           const username = res.data.packet;
           socketIo.getSocket().then((socket) => {
             socket.on('socket.ready', (res, cb) => {
-              console.log('socket is ready');
               if (res) {
                 cb('Socket is connected');
                 setUsernameState(username);

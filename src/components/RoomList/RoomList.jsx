@@ -4,16 +4,12 @@ import Room from '../../components/Room/Room';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import styles from './roomlist.module.scss';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { UsernameState, RefreshState } from '../../recoil/atoms';
+import { useRecoilValue } from 'recoil';
+import { UsernameState } from '../../recoil/atoms';
 
 function RoomList({ setRoomId }) {
-  // Recoil Values
   const username = useRecoilValue(UsernameState);
   const [roomList, setRoomList] = useState([]);
-  const [refreshState, setRefreshState] = useRecoilState(RefreshState);
-
-  // useState Values
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
   const [newRoomData, setNewRoomData] = useState({
     roomTitle: '',
@@ -22,11 +18,12 @@ function RoomList({ setRoomId }) {
   });
 
   const fetchRoomList = () => {
+    console.log('Fetch Room List function');
     socketIo.getSocket().then((socket) => {
       socket.emit('room.list', (res) => {
         if (res.result) {
           setRoomList(res.packet);
-          console.log('fetching room list');
+          console.log('Fetched room list');
           console.log(res.packet);
         } else {
           alert('Could not get room list');
@@ -36,9 +33,9 @@ function RoomList({ setRoomId }) {
   };
 
   const refreshRoomList = () => {
+    console.log('Refresh room list function');
     socketIo.getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
-        console.log('room list refresh');
         fetchRoomList();
       });
     });
@@ -46,13 +43,7 @@ function RoomList({ setRoomId }) {
 
   useEffect(() => {
     fetchRoomList();
-  }, []);
-
-  useEffect(() => {
-    if (!refreshState) {
-      refreshRoomList();
-      setRefreshState(true);
-    }
+    refreshRoomList();
   }, []);
 
   const handleNewRoomClick = () => {
@@ -103,7 +94,6 @@ function RoomList({ setRoomId }) {
       <button className={styles.newRoomButton} onClick={handleNewRoomClick}>
         New Room +
       </button>
-      {console.log(roomList)}
       {roomList.map((room, i) => (
         <Room key={i} room={room} num={i} setRoomId={setRoomId} />
       ))}

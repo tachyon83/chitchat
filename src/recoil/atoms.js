@@ -18,7 +18,7 @@ export const RoomListIdState = selector({
   },
 });
 
-export const RefreshState = atom({
-  key: 'RefreshState',
-  default: false,
-});
+// export const RefreshState = atom({
+//   key: 'RefreshState',
+//   default: false,
+// });

@@ -7,11 +7,8 @@ function AuthRoute({ privateRoute, children, ...rest }) {
   const username = useRecoilValue(UsernameState);
 
   const checkAuth = () => {
-    console.log(username);
     return username;
   };
-
-  console.log('auth route');
 
   if (privateRoute) {
     return (
