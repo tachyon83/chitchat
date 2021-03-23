@@ -7,7 +7,7 @@ import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
 
-function Chatting({ roomId, setRoomId }) {
+function Chatting({ roomId, setRoomId, setUserList }) {
   const username = useRecoilValue(UsernameState);
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
@@ -127,14 +127,36 @@ function Chatting({ roomId, setRoomId }) {
 
     socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
-        console.log(res);
+        if (!res.result) {
+          console.log(res);
+        }
       });
     });
     setChatInput('');
   };
 
+  const fetchUserList = () => {
+    socketIo.getSocket().then((socket) => {
+      console.log('fetching user list in room');
+      socket.emit('user.listInRoom', (res) => {
+        if (res.result) {
+          setUserList(res.packet);
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     getRoomInfo();
+    fetchUserList();
+
+    socketIo.getSocket().then((socket) => {
+      socket.on('chat.in', (res) => {
+        if (res.result) {
+          setChatData((prevChatData) => [...prevChatData, res.packet]);
+        }
+      });
+    });
 
     return () => {
       socketIo.getSocket().then((socket) => {
@@ -153,17 +175,6 @@ function Chatting({ roomId, setRoomId }) {
       setUserUpdate(false);
     }
   }, [userUpdate]);
-
-  useEffect(() => {
-    socketIo.getSocket().then((socket) => {
-      socket.on('chat.in', (res) => {
-        if (res.result) {
-          console.log(res.packet);
-          setChatData((prevChatData) => [...prevChatData, res.packet]);
-        }
-      });
-    });
-  }, []);
 
   if (!roomInfo) {
     return <div>Loading...</div>;

@@ -7,7 +7,7 @@ import styles from './roomlist.module.scss';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 
-function RoomList({ setRoomId }) {
+function RoomList({ setRoomId, setUserList }) {
   const username = useRecoilValue(UsernameState);
   const [roomList, setRoomList] = useState([]);
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
@@ -37,9 +37,21 @@ function RoomList({ setRoomId }) {
     });
   };
 
+  const fetchUserList = () => {
+    socketIo.getSocket().then((socket) => {
+      console.log('fetching user list in lobby');
+      socket.emit('user.listInLobby', (res) => {
+        if (res.result) {
+          setUserList(res.packet);
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     fetchRoomList();
     refreshRoomList();
+    fetchUserList();
   }, []);
 
   const handleNewRoomClick = () => {

@@ -45,18 +45,6 @@ function Lobby() {
     });
   };
 
-  const fetchUserList = () => {
-    socketIo.getSocket().then((socket) => {
-      console.log('fetching user list');
-      socket.emit('user.listInLobby', (res) => {
-        console.log(res);
-        // if (res.result) {
-        //   setUserList(res.packet);
-        // }
-      });
-    });
-  };
-
   const handleNewGroupInputChange = (e) => {
     setNewGroupName(e.target.value);
   };
@@ -65,10 +53,6 @@ function Lobby() {
     setShowNewGroupModal(false);
     setNewGroupName('');
   };
-
-  useEffect(() => {
-    fetchUserList();
-  }, []);
 
   return (
     <Container>
@@ -90,9 +74,13 @@ function Lobby() {
         </div>
         <div className={styles.rightBody}>
           {roomId ? (
-            <Chatting roomId={roomId} setRoomId={setRoomId}></Chatting>
+            <Chatting
+              roomId={roomId}
+              setRoomId={setRoomId}
+              setUserList={setUserList}
+            />
           ) : (
-            <RoomList setRoomId={setRoomId}></RoomList>
+            <RoomList setRoomId={setRoomId} setUserList={setUserList} />
           )}
         </div>
       </div>
