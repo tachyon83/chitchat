@@ -47,10 +47,12 @@ function Lobby() {
 
   const fetchUserList = () => {
     socketIo.getSocket().then((socket) => {
-      socket.emit('user.list', (res) => {
-        if (res.result) {
-          setUserList(res.packet);
-        }
+      console.log('fetching user list');
+      socket.emit('user.listInLobby', (res) => {
+        console.log(res);
+        // if (res.result) {
+        //   setUserList(res.packet);
+        // }
       });
     });
   };

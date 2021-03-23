@@ -34,10 +34,8 @@ function Room({ room, num, setRoomId }) {
       .getSocket()
       .then((socket) => {
         socket.emit('room.join', roomDto, (res) => {
-          console.log(res);
           if (res.result) {
             setRoomId(parseInt(roomId));
-            console.log(`enter room ${roomId}`);
           } else {
             alert('Could not enter room');
           }

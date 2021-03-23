@@ -125,8 +125,6 @@ function Chatting({ roomId, setRoomId }) {
       type: sendTo,
     };
 
-    console.log(chatDto);
-
     socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
         console.log(res);
@@ -152,7 +150,6 @@ function Chatting({ roomId, setRoomId }) {
 
   useEffect(() => {
     if (userUpdate) {
-      console.log('user update');
       getRoomInfo();
       setUserUpdate(false);
     }
@@ -164,8 +161,6 @@ function Chatting({ roomId, setRoomId }) {
         if (res.result) {
           console.log(res.packet);
           setChatData([...chatData, res.packet]);
-        } else {
-          setChatData([...chatData, res]);
         }
       });
     });

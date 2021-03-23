@@ -63,7 +63,7 @@ function Chat({ chat }) {
       return (
         <div className={styles.otherChat}>
           <div className={styles.otherChatFrom} onClick={handleFromClick}>
-            {chat.from}
+            {chat.from} {chat.type === 'group' && '[Group]'}
           </div>
           <div>{chat.text}</div>
           <Rodal visible={showInfoModal} onClose={closeInfoModal}>

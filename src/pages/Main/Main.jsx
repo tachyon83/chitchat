@@ -12,12 +12,9 @@ function Main() {
   const [currentGroup, setCurrentGroup] = useState('');
 
   const fetchUserInfo = () => {
-    console.log('fetch user info function');
     socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
-        console.log('USER READ');
         setCurrentGroup(res.packet.groupId);
-        console.log(res.packet);
       });
     });
   };
@@ -35,7 +32,6 @@ function Main() {
   };
 
   useEffect(() => {
-    console.log('MAIN USE EFFECT');
     fetchUserInfo();
   }, []);
 
