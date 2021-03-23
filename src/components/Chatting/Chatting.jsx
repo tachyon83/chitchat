@@ -131,7 +131,6 @@ function Chatting({ roomId, setRoomId }) {
       });
     });
     setChatInput('');
-    setChatData([...chatData, chatDto]);
   };
 
   useEffect(() => {
@@ -160,11 +159,11 @@ function Chatting({ roomId, setRoomId }) {
       socket.on('chat.in', (res) => {
         if (res.result) {
           console.log(res.packet);
-          setChatData([...chatData, res.packet]);
+          setChatData((prevChatData) => [...prevChatData, res.packet]);
         }
       });
     });
-  }, [chatData]);
+  }, []);
 
   if (!roomInfo) {
     return <div>Loading...</div>;
