@@ -160,8 +160,16 @@ function Chatting({ roomId, setRoomId, setUserList }) {
 
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInRoom.refresh', (res) => {
-        console.log('refresh in room');
-        console.log(res);
+        if (res.result) {
+          const { userId, isOnline } = res.packet;
+          if (isOnline) {
+            setUserList((prevState) => [userId, ...prevState]);
+          } else {
+            setUserList((prevState) =>
+              prevState.filter((name) => name !== userId)
+            );
+          }
+        }
       });
     });
 

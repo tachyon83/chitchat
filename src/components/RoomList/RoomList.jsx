@@ -39,7 +39,6 @@ function RoomList({ setRoomId, setUserList }) {
 
   const fetchUserList = () => {
     socketIo.getSocket().then((socket) => {
-      console.log('fetching user list in lobby');
       socket.emit('user.listInLobby', (res) => {
         if (res.result) {
           setUserList(res.packet);
@@ -51,8 +50,16 @@ function RoomList({ setRoomId, setUserList }) {
   const refreshUserList = () => {
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInLobby.refresh', (res) => {
-        console.log('refresh in lobby');
-        console.log(res);
+        if (res.result) {
+          const { userId, isOnline } = res.packet;
+          if (isOnline) {
+            setUserList((prevState) => [userId, ...prevState]);
+          } else {
+            setUserList((prevState) =>
+              prevState.filter((name) => name !== userId)
+            );
+          }
+        }
       });
     });
   };
