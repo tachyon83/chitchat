@@ -7,7 +7,7 @@ import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
 
-function Chatting({ roomId, setRoomId, setUserList }) {
+function Chatting({ roomId, setRoomId, userList, setUserList }) {
   const username = useRecoilValue(UsernameState);
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
@@ -18,6 +18,7 @@ function Chatting({ roomId, setRoomId, setUserList }) {
   const [userUpdate, setUserUpdate] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [sendTo, setSendTo] = useState('all');
+  const [whisperTarget, setWhisperTarget] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [chatData, setChatData] = useState([]);
 
@@ -115,15 +116,22 @@ function Chatting({ roomId, setRoomId, setUserList }) {
     setSendTo(e.target.value);
   };
 
+  const onWhisperTargetSelect = (e) => {
+    setWhisperTarget(e.target.value);
+  };
+
   const handleSendChat = (e) => {
     e.preventDefault();
 
     const chatDto = {
       from: username,
-      to: null,
+      to: sendTo === 'whisper' ? whisperTarget : null,
       text: chatInput,
       type: sendTo,
     };
+
+    console.log(whisperTarget);
+    console.log(chatDto);
 
     socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
@@ -222,6 +230,22 @@ function Chatting({ roomId, setRoomId, setUserList }) {
               </option>
             ))}
           </select>
+          {sendTo === 'whisper' && userList.length > 1 && (
+            <select value={whisperTarget} onChange={onWhisperTargetSelect}>
+              {userList
+                .filter((user) => user !== username)
+                .map((user) => (
+                  <option key={user} value={user}>
+                    {user}
+                  </option>
+                ))}
+            </select>
+          )}
+
+          {sendTo === 'whisper' && userList.length <= 1 && (
+            <p>Can't send whisper</p>
+          )}
+
           <input
             type="text"
             value={chatInput}

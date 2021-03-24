@@ -77,6 +77,7 @@ function Lobby() {
             <Chatting
               roomId={roomId}
               setRoomId={setRoomId}
+              userList={userList}
               setUserList={setUserList}
             />
           ) : (
