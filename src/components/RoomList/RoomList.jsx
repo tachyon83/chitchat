@@ -48,10 +48,20 @@ function RoomList({ setRoomId, setUserList }) {
     });
   };
 
+  const refreshUserList = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.on('user.listInLobby.refresh', (res) => {
+        console.log('refresh in lobby');
+        console.log(res);
+      });
+    });
+  };
+
   useEffect(() => {
     fetchRoomList();
     refreshRoomList();
     fetchUserList();
+    refreshUserList();
   }, []);
 
   const handleNewRoomClick = () => {

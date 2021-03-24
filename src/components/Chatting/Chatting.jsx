@@ -158,6 +158,13 @@ function Chatting({ roomId, setRoomId, setUserList }) {
       });
     });
 
+    socketIo.getSocket().then((socket) => {
+      socket.on('user.listInRoom.refresh', (res) => {
+        console.log('refresh in room');
+        console.log(res);
+      });
+    });
+
     return () => {
       socketIo.getSocket().then((socket) => {
         socket.emit('room.leave', (res) => {
