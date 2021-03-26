@@ -7,7 +7,7 @@ import styles from './roomlist.module.scss';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 
-function RoomList({ setRoomId, setUserList }) {
+function RoomList({ setRoomId, setUserList, setGroupList }) {
   const username = useRecoilValue(UsernameState);
   const [roomList, setRoomList] = useState([]);
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
@@ -41,6 +41,8 @@ function RoomList({ setRoomId, setUserList }) {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.listInLobby', (res) => {
         if (res.result) {
+          console.log('fetching user list');
+          console.log(res.packet);
           setUserList(res.packet);
         }
       });
@@ -51,6 +53,7 @@ function RoomList({ setRoomId, setUserList }) {
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInLobby.refresh', (res) => {
         if (res.result) {
+          console.log('fetching refresh user list');
           const { userId, isOnline } = res.packet;
           if (isOnline) {
             setUserList((prevState) => [userId, ...prevState]);
@@ -64,11 +67,24 @@ function RoomList({ setRoomId, setUserList }) {
     });
   };
 
+  const fetchGroupList = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('group.list', (res) => {
+        console.log('fetch group list');
+        if (res.result) {
+          console.log(res);
+          setGroupList(res.packet);
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     fetchRoomList();
     refreshRoomList();
     fetchUserList();
     refreshUserList();
+    fetchGroupList();
   }, []);
 
   const handleNewRoomClick = () => {

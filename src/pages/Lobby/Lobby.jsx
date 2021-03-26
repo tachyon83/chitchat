@@ -12,6 +12,7 @@ function Lobby() {
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [userList, setUserList] = useState([]);
+  const [groupList, setGroupList] = useState([]);
 
   const handleCreateNewGroup = () => {
     socketIo.getSocket().then((socket) => {
@@ -66,8 +67,13 @@ function Lobby() {
               New Group +
             </button>
             <div>
-              {userList.map((user) => (
-                <p key={user}>{user}</p>
+              {userList.map((user, i) => (
+                <p key={`${user}-${i}`}>{user}</p>
+              ))}
+            </div>
+            <div>
+              {groupList.map((group, i) => (
+                <p key={`${group}-${i}`}>{group}</p>
               ))}
             </div>
           </div>
@@ -79,9 +85,14 @@ function Lobby() {
               setRoomId={setRoomId}
               userList={userList}
               setUserList={setUserList}
+              setGroupList={setGroupList}
             />
           ) : (
-            <RoomList setRoomId={setRoomId} setUserList={setUserList} />
+            <RoomList
+              setRoomId={setRoomId}
+              setUserList={setUserList}
+              setGroupList={setGroupList}
+            />
           )}
         </div>
       </div>

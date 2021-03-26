@@ -7,7 +7,7 @@ import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
 
-function Chatting({ roomId, setRoomId, userList, setUserList }) {
+function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
   const username = useRecoilValue(UsernameState);
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
@@ -157,10 +157,12 @@ function Chatting({ roomId, setRoomId, userList, setUserList }) {
   useEffect(() => {
     getRoomInfo();
     fetchUserList();
+    setGroupList([]);
 
     socketIo.getSocket().then((socket) => {
       socket.on('chat.in', (res) => {
         if (res.result) {
+          console.log(res.packet);
           setChatData((prevChatData) => [...prevChatData, res.packet]);
         }
       });
