@@ -31,6 +31,7 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
 
   const refreshRoomList = () => {
     socketIo.getSocket().then((socket) => {
+      console.log('room list refresh');
       socket.on('room.list.refresh', (res) => {
         fetchRoomList();
       });
@@ -40,9 +41,8 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
   const fetchUserList = () => {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.listInLobby', (res) => {
+        console.log('user list in lobby');
         if (res.result) {
-          console.log('fetching user list');
-          console.log(res.packet);
           setUserList(res.packet);
         }
       });
@@ -85,6 +85,13 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
     fetchUserList();
     refreshUserList();
     fetchGroupList();
+
+    return () => {
+      socketIo.getSocket().then((socket) => {
+        socket.off('room.list.refresh');
+        socket.off('user.listInLobby.refresh');
+      });
+    };
   }, []);
 
   const handleNewRoomClick = () => {

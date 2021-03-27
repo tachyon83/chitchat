@@ -59,26 +59,27 @@ function Chat({ chat }) {
   if (chat.to === null) {
     if (chat.from === username) {
       return <div className={styles.myChat}>{chat.text}</div>;
-    } else {
-      return (
-        <div className={styles.otherChat}>
-          <div className={styles.otherChatFrom} onClick={handleFromClick}>
-            {chat.from} {chat.type === 'group' && '[Group]'}
-          </div>
-          <div>{chat.text}</div>
-          <Rodal visible={showInfoModal} onClose={closeInfoModal}>
-            <div className={styles.userInfo}>
-              <p>Name: {chat.from}</p>
-              <p>Current Group: {userGroup || 'None'}</p>
-            </div>
-            <button onClick={handleJoinGroup}>Join same group</button>
-          </Rodal>
-        </div>
-      );
     }
   }
 
-  return <div>chat</div>;
+  return (
+    <div className={styles.otherChat}>
+      <div className={styles.otherChatFrom} onClick={handleFromClick}>
+        {chat.from} {chat.type === 'group' && '[Group]'}
+        {chat.type === 'whisper' && '[Whisper]'}
+      </div>
+      <div>{chat.text}</div>
+      <Rodal visible={showInfoModal} onClose={closeInfoModal}>
+        <div className={styles.userInfo}>
+          <p>Name: {chat.from}</p>
+          <p>Current Group: {userGroup || 'None'}</p>
+        </div>
+        {userGroup && (
+          <button onClick={handleJoinGroup}>Join same group</button>
+        )}
+      </Rodal>
+    </div>
+  );
 }
 
 export default Chat;

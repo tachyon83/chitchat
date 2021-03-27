@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Container from '../../components/Container/Container';
 import Chatting from '../../components/Chatting/Chatting';
 import RoomList from '../../components/RoomList/RoomList';
@@ -55,6 +55,10 @@ function Lobby() {
     setNewGroupName('');
   };
 
+  const filterUserList = userList.filter(
+    (item, index) => userList.indexOf(item) === index
+  );
+
   return (
     <Container>
       <div className={styles.body}>
@@ -83,7 +87,7 @@ function Lobby() {
             <Chatting
               roomId={roomId}
               setRoomId={setRoomId}
-              userList={userList}
+              userList={filterUserList}
               setUserList={setUserList}
               setGroupList={setGroupList}
             />

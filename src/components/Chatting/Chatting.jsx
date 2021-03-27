@@ -123,15 +123,19 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
   const handleSendChat = (e) => {
     e.preventDefault();
 
+    const userListWithoutSelf = userList.filter((user) => user !== username);
+
     const chatDto = {
       from: username,
-      to: sendTo === 'whisper' ? whisperTarget : null,
+      to:
+        sendTo === 'whisper'
+          ? whisperTarget === ''
+            ? userListWithoutSelf[0]
+            : whisperTarget
+          : null,
       text: chatInput,
       type: sendTo,
     };
-
-    console.log(whisperTarget);
-    console.log(chatDto);
 
     socketIo.getSocket().then((socket) => {
       socket.emit('chat.out', chatDto, (res) => {
@@ -170,6 +174,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInRoom.refresh', (res) => {
+        console.log('fetching user list room refresh');
         if (res.result) {
           const { userId, isOnline } = res.packet;
           if (isOnline) {
@@ -189,6 +194,8 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
           if (!res.result) {
             alert('Failed to leave room');
           }
+          socket.off('chat.in');
+          socket.off('user.listInRoom.refresh');
         });
       });
     };
