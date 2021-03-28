@@ -149,7 +149,6 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
   const fetchUserList = () => {
     socketIo.getSocket().then((socket) => {
-      console.log('fetching user list in room');
       socket.emit('user.listInRoom', (res) => {
         if (res.result) {
           setUserList(res.packet);
@@ -166,7 +165,6 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
     socketIo.getSocket().then((socket) => {
       socket.on('chat.in', (res) => {
         if (res.result) {
-          console.log(res.packet);
           setChatData((prevChatData) => [...prevChatData, res.packet]);
         }
       });
@@ -174,7 +172,6 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInRoom.refresh', (res) => {
-        console.log('fetching user list room refresh');
         if (res.result) {
           const { userId, isOnline } = res.packet;
           if (isOnline) {

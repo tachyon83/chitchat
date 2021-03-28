@@ -31,7 +31,6 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
 
   const refreshRoomList = () => {
     socketIo.getSocket().then((socket) => {
-      console.log('room list refresh');
       socket.on('room.list.refresh', (res) => {
         fetchRoomList();
       });
@@ -41,7 +40,6 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
   const fetchUserList = () => {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.listInLobby', (res) => {
-        console.log('user list in lobby');
         if (res.result) {
           setUserList(res.packet);
         }
@@ -53,7 +51,6 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
     socketIo.getSocket().then((socket) => {
       socket.on('user.listInLobby.refresh', (res) => {
         if (res.result) {
-          console.log('fetching refresh user list');
           const { userId, isOnline } = res.packet;
           if (isOnline) {
             setUserList((prevState) => [userId, ...prevState]);
@@ -70,10 +67,25 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
   const fetchGroupList = () => {
     socketIo.getSocket().then((socket) => {
       socket.emit('group.list', (res) => {
-        console.log('fetch group list');
         if (res.result) {
-          console.log(res);
           setGroupList(res.packet);
+        }
+      });
+    });
+  };
+
+  const refreshGroupList = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.on('group.list.refresh', (res) => {
+        if (res.result) {
+          const { groupId, isOnline } = res.packet;
+          if (isOnline) {
+            setGroupList((prevState) => [groupId, ...prevState]);
+          } else {
+            setGroupList((prevState) =>
+              prevState.filter((group) => group !== groupId)
+            );
+          }
         }
       });
     });
@@ -85,11 +97,13 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
     fetchUserList();
     refreshUserList();
     fetchGroupList();
+    refreshGroupList();
 
     return () => {
       socketIo.getSocket().then((socket) => {
         socket.off('room.list.refresh');
         socket.off('user.listInLobby.refresh');
+        socket.off('group.list.refresh');
       });
     };
   }, []);

@@ -18,6 +18,7 @@ const socketIo = (function () {
       return socket;
     },
     removeSocket: function () {
+      socket.disconnect();
       socket = null;
       console.log('Removing socket');
     },
