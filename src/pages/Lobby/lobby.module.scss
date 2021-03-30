@@ -1,7 +1,7 @@
 .newGroupButton {
   padding: 1em;
   margin-top: 1em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
   background-color: #6c2e8b;
   color: white;
   border-radius: 0.7em;
@@ -14,10 +14,20 @@
 
   .sidebar {
     flex: 1;
+
+    .lobbyHr {
+      margin: 1.5em 0;
+      border-top: 1px solid #6c2e8b;
+      width: 80%;
+    }
+
+    .list {
+      margin: 0.5em 0;
+    }
   }
 
   .rightBody {
-    flex: 3;
+    flex: 2.5;
   }
 }
 

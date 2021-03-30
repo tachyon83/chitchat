@@ -1,18 +1,30 @@
-.image {
-  width: 60%;
-  display: block;
-  margin: auto;
-  margin-top: 3em;
-}
+.mainDiv {
+  position: relative;
+  text-align: center;
 
-.text {
-  margin: 2em 3em;
-  font-size: 24px;
-  line-height: 1.5em;
+  .image {
+    width: 85%;
+    display: block;
+    margin: auto;
+    margin-top: 2em;
+  }
 
-  .name {
-    font-size: 30px;
-    margin-left: 5px;
-    color: #8c3fab;
+  .textContainer {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+  }
+
+  .text {
+    margin: 2em 3em 0 3em;
+    font-size: 1.6em;
+    line-height: 1.5em;
+
+    .name {
+      font-size: 1.7em;
+      margin-left: 5px;
+      color: #8c3fab;
+    }
   }
 }

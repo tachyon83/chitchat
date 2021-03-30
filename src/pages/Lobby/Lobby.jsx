@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from '../../components/Container/Container';
 import Chatting from '../../components/Chatting/Chatting';
 import RoomList from '../../components/RoomList/RoomList';
@@ -13,18 +13,39 @@ function Lobby() {
   const [newGroupName, setNewGroupName] = useState('');
   const [userList, setUserList] = useState([]);
   const [groupList, setGroupList] = useState([]);
+  const [currentGroup, setCurrentGroup] = useState('');
 
-  const handleCreateNewGroup = () => {
+  const fetchUserInfo = () => {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
-        if (res.packet.groupId) {
-          alert('You are already in a group');
-          return;
+        setCurrentGroup(res.packet.groupId);
+      });
+    });
+  };
+
+  const leaveGroup = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.disjoinGroup', (res) => {
+        if (res.result) {
+          setCurrentGroup('');
         } else {
-          setShowNewGroupModal(true);
+          alert('Failed to leave group');
         }
       });
     });
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const handleCreateNewGroup = () => {
+    if (currentGroup) {
+      alert('You are already in a group');
+      return;
+    } else {
+      setShowNewGroupModal(true);
+    }
   };
 
   const handleAddNewGroup = (e) => {
@@ -38,6 +59,7 @@ function Lobby() {
       socket.emit('user.createGroup', newGroupName, (res) => {
         if (res.result) {
           closeNewGroupModal();
+          setCurrentGroup(newGroupName);
         } else {
           alert('Unable to create a group with the following group name.');
           setNewGroupName('');
@@ -64,22 +86,45 @@ function Lobby() {
       <div className={styles.body}>
         <div className={styles.sidebar}>
           <div>
-            <button
-              onClick={handleCreateNewGroup}
-              className={styles.newGroupButton}
-            >
-              New Group +
-            </button>
-            <div>
-              {userList.map((user, i) => (
-                <p key={`${user}-${i}`}>{user}</p>
-              ))}
-            </div>
-            <div>
-              {groupList.map((group, i) => (
-                <p key={`${group}-${i}`}>{group}</p>
-              ))}
-            </div>
+            {currentGroup && (
+              <button onClick={leaveGroup} className={styles.newGroupButton}>
+                Leave Current Group
+              </button>
+            )}
+            {!currentGroup && (
+              <button
+                onClick={handleCreateNewGroup}
+                className={styles.newGroupButton}
+              >
+                New Group +
+              </button>
+            )}
+            {currentGroup && (
+              <p>
+                [Current Group]
+                <ul className={styles.list}>
+                  <li>{currentGroup}</li>
+                </ul>
+                <hr className={styles.lobbyHr} />
+              </p>
+            )}
+            <p>
+              [Current Users]
+              <ul className={styles.list}>
+                {userList.map((user, i) => (
+                  <li key={`${user}-${i}`}>{user}</li>
+                ))}
+              </ul>
+              <hr className={styles.lobbyHr} />
+            </p>
+            <p>
+              [Current Groups]
+              <ul className={styles.list}>
+                {groupList.map((group, i) => (
+                  <li key={`${group}-${i}`}>{group}</li>
+                ))}
+              </ul>
+            </p>
           </div>
         </div>
         <div className={styles.rightBody}>

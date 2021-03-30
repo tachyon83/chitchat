@@ -9,6 +9,7 @@ import Chat from '../Chat/Chat';
 
 function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
   const username = useRecoilValue(UsernameState);
+  const [roomName, setRoomName] = useState('');
   const [roomInfo, setRoomInfo] = useState({});
   const [userEditInput, setUserEditInput] = useState({
     roomTitle: '',
@@ -103,6 +104,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
       socket.emit('room.info', (res) => {
         setRoomInfo(res.packet);
         const { roomTitle, roomCapacity } = res.packet;
+        setRoomName(roomTitle);
         setUserEditInput({ ...userEditInput, roomTitle, roomCapacity });
       });
     });
@@ -211,12 +213,14 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
   return (
     <div className={styles.container}>
-      <p>Currently in Room {roomId}</p>
-      <div className={styles.topDesc}>
-        <button onClick={handleLeave} className={styles.leaveButton}>
-          Leave Room
-        </button>
-        <button onClick={handleEditButton}>Edit Room</button>
+      <div className={styles.chattingTop}>
+        <p>Current Room: {roomName}</p>
+        <div className={styles.topDesc}>
+          <button onClick={handleLeave} className={styles.leaveButton}>
+            Leave Room
+          </button>
+          <button onClick={handleEditButton}>Edit Room</button>
+        </div>
       </div>
 
       <div className={styles.chattingContainer}>
@@ -265,9 +269,9 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
       {/* Modal */}
       <Rodal visible={showEditModal} onClose={closeEditModal}>
-        <form>
-          <div>
-            <label>Room name:</label>
+        <form className={styles.editRoomModal}>
+          <div className={styles.row}>
+            <label>Name:</label>
             <input
               type="text"
               name="roomTitle"
@@ -275,8 +279,8 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
               onChange={handleEditInputChange}
             />
           </div>
-          <div>
-            <label>Room password:</label>
+          <div className={styles.row}>
+            <label>Password:</label>
             <input
               type="password"
               name="roomPw"
@@ -284,8 +288,8 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
               onChange={handleEditInputChange}
             />
           </div>
-          <div>
-            <label>Room capacity:</label>
+          <div className={styles.row}>
+            <label>Capacity:</label>
             <input
               type="number"
               name="roomCapacity"
@@ -294,7 +298,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
             />
           </div>
           <button type="submit" onClick={handleEditSubmit}>
-            수정
+            Edit
           </button>
         </form>
       </Rodal>
