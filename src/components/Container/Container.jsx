@@ -26,6 +26,22 @@ function Container({ children }) {
       .catch((err) => console.log(err));
   };
 
+  const handleHomeClick = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        if (res.packet.pos !== 0) {
+          console.log(`IN ${res.packet.pos}`);
+          socket.emit('room.leave', (res) => {
+            if (!res.result) {
+              alert('Failed to leave room');
+            }
+            socket.off();
+          });
+        }
+      });
+    });
+  };
+
   return (
     <div className={styles.container}>
       <button className={styles.signout} onClick={handleSignout}>
@@ -35,7 +51,7 @@ function Container({ children }) {
         <div className={styles.iconContainer}>
           <div className={styles.icons}>
             <Link to="/main">
-              <img src={HomeIcon} alt="Home" />
+              <img src={HomeIcon} alt="Home" onClick={handleHomeClick} />
             </Link>
             <Link to="/lobby">
               <img src={ChatIcon} alt="Chat" />

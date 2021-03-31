@@ -3,6 +3,7 @@ import socketIo from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import styles from './chatting.module.scss';
+import ScrollToBottom from 'react-scroll-to-bottom';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
@@ -92,6 +93,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
       socket.emit('room.leave', (res) => {
         if (res.result) {
           setRoomId(null);
+          socket.off();
         } else {
           alert('Failed to leave room');
         }
@@ -186,18 +188,6 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
         }
       });
     });
-
-    return () => {
-      socketIo.getSocket().then((socket) => {
-        socket.emit('room.leave', (res) => {
-          if (!res.result) {
-            alert('Failed to leave room');
-          }
-          socket.off('chat.in');
-          socket.off('user.listInRoom.refresh');
-        });
-      });
-    };
   }, []);
 
   useEffect(() => {
@@ -223,13 +213,11 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
         </div>
       </div>
 
-      <div className={styles.chattingContainer}>
-        <div>
-          {chatData.map((chat, i) => (
-            <Chat key={i} chat={chat} />
-          ))}
-        </div>
-      </div>
+      <ScrollToBottom className={styles.chattingContainer}>
+        {chatData.map((chat, i) => (
+          <Chat key={i} chat={chat} />
+        ))}
+      </ScrollToBottom>
 
       <div className={styles.inputWrapper}>
         <form onSubmit={handleSendChat}>
@@ -253,7 +241,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
           )}
 
           {sendTo === 'whisper' && userList.length <= 1 && (
-            <p>Can't send whisper</p>
+            <span>Can't send whisper</span>
           )}
 
           <input

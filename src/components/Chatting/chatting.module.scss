@@ -33,6 +33,10 @@
 }
 
 .chattingContainer {
+  overflow: auto;
+  flex: auto;
+  height: 20em;
+  border: 1px solid grey;
 }
 
 .inputWrapper {

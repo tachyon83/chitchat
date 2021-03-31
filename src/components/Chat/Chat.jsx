@@ -58,7 +58,12 @@ function Chat({ chat }) {
 
   if (chat.to === null) {
     if (chat.from === username) {
-      return <div className={styles.myChat}>{chat.text}</div>;
+      return (
+        <div className={styles.myChat}>
+          <div className={styles.myChatFrom}>{username}</div>
+          {chat.text}
+        </div>
+      );
     }
   }
 

@@ -100,31 +100,28 @@ function Lobby() {
               </button>
             )}
             {currentGroup && (
-              <p>
-                [Current Group]
+              <>
+                <p>[Current Group]</p>
                 <ul className={styles.list}>
                   <li>{currentGroup}</li>
                 </ul>
                 <hr className={styles.lobbyHr} />
-              </p>
+              </>
             )}
-            <p>
-              [Current Users]
-              <ul className={styles.list}>
-                {userList.map((user, i) => (
-                  <li key={`${user}-${i}`}>{user}</li>
-                ))}
-              </ul>
-              <hr className={styles.lobbyHr} />
-            </p>
-            <p>
-              [Current Groups]
-              <ul className={styles.list}>
-                {groupList.map((group, i) => (
-                  <li key={`${group}-${i}`}>{group}</li>
-                ))}
-              </ul>
-            </p>
+            <p>[Current Users]</p>
+            <ul className={styles.list}>
+              {userList.map((user, i) => (
+                <li key={`${user}-${i}`}>{user}</li>
+              ))}
+            </ul>
+            <hr className={styles.lobbyHr} />
+
+            <p>[Current Groups]</p>
+            <ul className={styles.list}>
+              {groupList.map((group, i) => (
+                <li key={`${group}-${i}`}>{group}</li>
+              ))}
+            </ul>
           </div>
         </div>
         <div className={styles.rightBody}>

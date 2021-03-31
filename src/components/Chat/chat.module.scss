@@ -3,19 +3,35 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.7em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 .myChat {
   text-align: right;
+  float: right;
   margin-bottom: 0.7em;
+  margin-right: 0.5em;
+  padding: 0.3em 0.7em;
+  background-color: grey;
+  color: white;
+  border-radius: 0.7em;
+  width: 60%;
+
+  .myChatFrom {
+    font-size: 14px;
+    color: white;
+  }
 }
 
 .otherChat {
+  margin-left: 0.5em;
   margin-bottom: 0.7em;
   padding: 0.3em 0.7em;
   background-color: #6c2e8b;
   color: white;
   border-radius: 0.7em;
+  width: 60%;
 
   .otherChatFrom {
     font-size: 14px;
