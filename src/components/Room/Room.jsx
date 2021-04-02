@@ -3,15 +3,28 @@ import socketIo from '../../utils/util';
 import Rodal from 'react-modal';
 import styles from './room.module.scss';
 
-function Room({ room, num, setRoomId }) {
+function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
   const [roomPwInput, setRoomPwInput] = useState('');
   const [showRoomPwModal, setShowRoomPwModal] = useState(false);
 
   const handleRoomClick = () => {
-    if (room.roomPw) {
-      setShowRoomPwModal(true);
+    // 접어두기 상태
+    if (roomFoldId) {
+      // 접어두기와 동일한 방
+      if (roomFoldId === parseInt(room.roomId)) {
+        console.log('enter fold room');
+        setRoomId(roomFoldId);
+        setRoomFoldId(null);
+      } else {
+        // 접어두기와 다른 방
+        alert('접어두기한 방이 있습니다. ');
+      }
     } else {
-      requestRoomJoin();
+      if (room.roomPw) {
+        setShowRoomPwModal(true);
+      } else {
+        requestRoomJoin();
+      }
     }
   };
 

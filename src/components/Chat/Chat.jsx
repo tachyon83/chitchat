@@ -56,19 +56,40 @@ function Chat({ chat }) {
     );
   }
 
-  if (chat.to === null) {
-    if (chat.from === username) {
-      return (
-        <div className={styles.myChat}>
-          <div className={styles.myChatFrom}>{username}</div>
-          {chat.text}
+  if (chat.from === username) {
+    return (
+      <div
+        className={`${styles.myChat} ${
+          chat.type === 'all'
+            ? styles.myChatToAll
+            : chat.type === 'group'
+            ? styles.myChatToGroup
+            : styles.myChatToWhisper
+        }`}
+      >
+        <div className={styles.myChatFrom}>
+          {username}{' '}
+          {chat.type === 'group'
+            ? '[Group]'
+            : chat.type === 'all'
+            ? ''
+            : `[${chat.type}]`}
         </div>
-      );
-    }
+        {chat.text}
+      </div>
+    );
   }
 
   return (
-    <div className={styles.otherChat}>
+    <div
+      className={`${styles.otherChat} ${
+        chat.type === 'all'
+          ? styles.otherChatToAll
+          : chat.type === 'group'
+          ? styles.otherChatToGroup
+          : styles.otherChatToWhisper
+      }`}
+    >
       <div className={styles.otherChatFrom} onClick={handleFromClick}>
         {chat.from} {chat.type === 'group' && '[Group]'}
         {chat.type === 'whisper' && '[Whisper]'}

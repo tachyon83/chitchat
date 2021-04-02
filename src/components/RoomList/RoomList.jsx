@@ -7,7 +7,13 @@ import styles from './roomlist.module.scss';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 
-function RoomList({ setRoomId, setUserList, setGroupList }) {
+function RoomList({
+  roomFoldId,
+  setRoomFoldId,
+  setRoomId,
+  setUserList,
+  setGroupList,
+}) {
   const username = useRecoilValue(UsernameState);
   const [roomList, setRoomList] = useState([]);
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
@@ -99,6 +105,8 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
     fetchGroupList();
     refreshGroupList();
 
+    console.log('room list');
+
     return () => {
       socketIo.getSocket().then((socket) => {
         socket.off('room.list.refresh');
@@ -157,7 +165,14 @@ function RoomList({ setRoomId, setUserList, setGroupList }) {
         New Room +
       </button>
       {roomList.map((room, i) => (
-        <Room key={i} room={room} num={i} setRoomId={setRoomId} />
+        <Room
+          key={i}
+          room={room}
+          num={i}
+          setRoomId={setRoomId}
+          roomFoldId={roomFoldId}
+          setRoomFoldId={setRoomFoldId}
+        />
       ))}
 
       <Rodal visible={showNewRoomModal} onClose={closeNewRoomModal}>

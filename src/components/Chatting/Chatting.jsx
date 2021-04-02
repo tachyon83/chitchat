@@ -8,7 +8,14 @@ import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
 
-function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
+function Chatting({
+  roomId,
+  setRoomId,
+  userList,
+  setUserList,
+  setGroupList,
+  setRoomFoldId,
+}) {
   const username = useRecoilValue(UsernameState);
   const [roomName, setRoomName] = useState('');
   const [roomInfo, setRoomInfo] = useState({});
@@ -101,6 +108,14 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
     });
   };
 
+  const handleFoldButton = () => {
+    setRoomId(null);
+    setRoomFoldId(roomId);
+    socketIo.getSocket().then((socket) => {
+      socket.off();
+    });
+  };
+
   const getRoomInfo = () => {
     socketIo.getSocket().then((socket) => {
       socket.emit('room.info', (res) => {
@@ -168,6 +183,7 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
 
     socketIo.getSocket().then((socket) => {
       socket.on('chat.in', (res) => {
+        console.log(res.packet);
         if (res.result) {
           setChatData((prevChatData) => [...prevChatData, res.packet]);
         }
@@ -204,12 +220,13 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
   return (
     <div className={styles.container}>
       <div className={styles.chattingTop}>
-        <p>Current Room: {roomName}</p>
+        <p className={styles.roomName}>[{roomName}]</p>
         <div className={styles.topDesc}>
           <button onClick={handleLeave} className={styles.leaveButton}>
             Leave Room
           </button>
           <button onClick={handleEditButton}>Edit Room</button>
+          <button onClick={handleFoldButton}>접기</button>
         </div>
       </div>
 
@@ -219,41 +236,35 @@ function Chatting({ roomId, setRoomId, userList, setUserList, setGroupList }) {
         ))}
       </ScrollToBottom>
 
-      <div className={styles.inputWrapper}>
-        <form onSubmit={handleSendChat}>
-          <select value={sendTo} onChange={setSendSelect}>
-            {chatType.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
+      <form onSubmit={handleSendChat} className={styles.inputWrapper}>
+        <select value={sendTo} onChange={setSendSelect}>
+          {chatType.map((type) => (
+            <option key={type.id} value={type.id}>
+              {type.name}
+            </option>
+          ))}
+        </select>
+        {sendTo === 'whisper' && userList.length > 1 && (
+          <select value={whisperTarget} onChange={onWhisperTargetSelect}>
+            {userList
+              .filter((user) => user !== username)
+              .map((user) => (
+                <option key={user} value={user}>
+                  {user}
+                </option>
+              ))}
           </select>
-          {sendTo === 'whisper' && userList.length > 1 && (
-            <select value={whisperTarget} onChange={onWhisperTargetSelect}>
-              {userList
-                .filter((user) => user !== username)
-                .map((user) => (
-                  <option key={user} value={user}>
-                    {user}
-                  </option>
-                ))}
-            </select>
-          )}
+        )}
 
-          {sendTo === 'whisper' && userList.length <= 1 && (
-            <span>Can't send whisper</span>
-          )}
+        {sendTo === 'whisper' && userList.length <= 1 && (
+          <span>Can't send whisper</span>
+        )}
 
-          <input
-            type="text"
-            value={chatInput}
-            onChange={handleChatInputChange}
-          />
-          <button type="submit" onClick={handleSendChat}>
-            Send
-          </button>
-        </form>
-      </div>
+        <input type="text" value={chatInput} onChange={handleChatInputChange} />
+        <button type="submit" onClick={handleSendChat}>
+          Send
+        </button>
+      </form>
 
       {/* Modal */}
       <Rodal visible={showEditModal} onClose={closeEditModal}>

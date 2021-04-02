@@ -9,11 +9,9 @@
 
 .myChat {
   text-align: right;
-  float: right;
   margin-bottom: 0.7em;
   margin-right: 0.5em;
   padding: 0.3em 0.7em;
-  background-color: grey;
   color: white;
   border-radius: 0.7em;
   width: 60%;
@@ -24,11 +22,22 @@
   }
 }
 
+.myChatToAll {
+  background-color: #6c2e8b;
+}
+
+.myChatToGroup {
+  background-color: #502eb8;
+}
+
+.myChatToWhisper {
+  background-color: grey;
+}
+
 .otherChat {
   margin-left: 0.5em;
   margin-bottom: 0.7em;
   padding: 0.3em 0.7em;
-  background-color: #6c2e8b;
   color: white;
   border-radius: 0.7em;
   width: 60%;
@@ -42,4 +51,16 @@
   .userInfo {
     color: black;
   }
+}
+
+.otherChatToAll {
+  background-color: rgb(69, 21, 94);
+}
+
+.otherChatToGroup {
+  background-color: #321c74;
+}
+
+.otherChatToWhisper {
+  background-color: rgb(68, 68, 68);
 }

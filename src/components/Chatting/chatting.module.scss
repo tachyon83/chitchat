@@ -5,6 +5,10 @@
 .chattingTop {
   display: flex;
   justify-content: space-between;
+
+  .roomName {
+    font-size: 20px;
+  }
 }
 
 .topDesc {

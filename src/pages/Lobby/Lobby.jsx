@@ -9,6 +9,7 @@ import styles from './lobby.module.scss';
 
 function Lobby() {
   const [roomId, setRoomId] = useState(null);
+  const [roomFoldId, setRoomFoldId] = useState(null);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [userList, setUserList] = useState([]);
@@ -132,12 +133,15 @@ function Lobby() {
               userList={filterUserList}
               setUserList={setUserList}
               setGroupList={setGroupList}
+              setRoomFoldId={setRoomFoldId}
             />
           ) : (
             <RoomList
               setRoomId={setRoomId}
               setUserList={setUserList}
               setGroupList={setGroupList}
+              roomFoldId={roomFoldId}
+              setRoomFoldId={setRoomFoldId}
             />
           )}
         </div>
