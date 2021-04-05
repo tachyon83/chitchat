@@ -87,11 +87,13 @@ function Lobby() {
       <div className={styles.body}>
         <div className={styles.sidebar}>
           <div>
+            {/* 그룹에 있는 경우 */}
             {currentGroup && (
               <button onClick={leaveGroup} className={styles.newGroupButton}>
                 Leave Current Group
               </button>
             )}
+            {/* 그룹에 없는 경우 */}
             {!currentGroup && (
               <button
                 onClick={handleCreateNewGroup}
@@ -100,25 +102,32 @@ function Lobby() {
                 New Group +
               </button>
             )}
+            {/* 그룹에 있는 경우 */}
             {currentGroup && (
               <>
-                <p>[Current Group]</p>
+                <p>[Joined Group]</p>
                 <ul className={styles.list}>
                   <li>{currentGroup}</li>
                 </ul>
                 <hr className={styles.lobbyHr} />
               </>
             )}
+            {/* 현재 유저 */}
             <p>[Current Users]</p>
             <ul className={styles.list}>
               {userList.map((user, i) => (
                 <li key={`${user}-${i}`}>{user}</li>
               ))}
             </ul>
-            <hr className={styles.lobbyHr} />
-
-            <p>[Current Groups]</p>
+            {/* 그룹 정보 */}
+            {groupList.length !== 0 && (
+              <>
+                <hr className={styles.lobbyHr} />
+                <p>[Current Groups]</p>
+              </>
+            )}
             <ul className={styles.list}>
+              {console.log(groupList)}
               {groupList.map((group, i) => (
                 <li key={`${group}-${i}`}>{group}</li>
               ))}
@@ -134,6 +143,7 @@ function Lobby() {
               setUserList={setUserList}
               setGroupList={setGroupList}
               setRoomFoldId={setRoomFoldId}
+              setCurrentGroup={setCurrentGroup}
             />
           ) : (
             <RoomList

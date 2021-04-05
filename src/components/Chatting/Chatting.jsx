@@ -15,6 +15,7 @@ function Chatting({
   setUserList,
   setGroupList,
   setRoomFoldId,
+  setCurrentGroup,
 }) {
   const username = useRecoilValue(UsernameState);
   const [roomName, setRoomName] = useState('');
@@ -142,6 +143,15 @@ function Chatting({
   const handleSendChat = (e) => {
     e.preventDefault();
 
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        if (!res.packet.groupId) {
+          alert('You are not in a group');
+          return;
+        }
+      });
+    });
+
     const userListWithoutSelf = userList.filter((user) => user !== username);
 
     const chatDto = {
@@ -232,7 +242,7 @@ function Chatting({
 
       <ScrollToBottom className={styles.chattingContainer}>
         {chatData.map((chat, i) => (
-          <Chat key={i} chat={chat} />
+          <Chat key={i} chat={chat} setCurrentGroup={setCurrentGroup} />
         ))}
       </ScrollToBottom>
 
@@ -256,11 +266,15 @@ function Chatting({
           </select>
         )}
 
-        {sendTo === 'whisper' && userList.length <= 1 && (
-          <span>Can't send whisper</span>
-        )}
-
-        <input type="text" value={chatInput} onChange={handleChatInputChange} />
+        <input
+          type="text"
+          value={chatInput}
+          onChange={handleChatInputChange}
+          placeholder={
+            sendTo === 'whisper' && userList.length <= 1 && "Can't send whisper"
+          }
+          disabled={sendTo === 'whisper' && userList.length <= 1}
+        />
         <button type="submit" onClick={handleSendChat}>
           Send
         </button>

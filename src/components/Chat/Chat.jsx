@@ -6,7 +6,7 @@ import socketIo from '../../utils/util';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 
-function Chat({ chat }) {
+function Chat({ chat, setCurrentGroup }) {
   const username = useRecoilValue(UsernameState);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [userGroup, setUserGroup] = useState(null);
@@ -39,6 +39,7 @@ function Chat({ chat }) {
           socket.emit('user.joinGroup', userGroup, (res) => {
             if (res.result) {
               alert(`You have joined the following group: ${userGroup}`);
+              setCurrentGroup(userGroup);
             }
           });
         });
