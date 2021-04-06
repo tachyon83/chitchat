@@ -128,6 +128,14 @@ function Chatting({
     });
   };
 
+  const refreshRoomInfo = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('room.info.refresh', (res) => {
+        console.log(res);
+      });
+    });
+  };
+
   const handleChatInputChange = (e) => {
     setChatInput(e.target.value);
   };
@@ -188,6 +196,7 @@ function Chatting({
 
   useEffect(() => {
     getRoomInfo();
+    refreshRoomInfo();
     fetchUserList();
     setGroupList([]);
 
@@ -271,7 +280,9 @@ function Chatting({
           value={chatInput}
           onChange={handleChatInputChange}
           placeholder={
-            sendTo === 'whisper' && userList.length <= 1 && "Can't send whisper"
+            sendTo === 'whisper' && userList.length <= 1
+              ? "Can't send whisper"
+              : ''
           }
           disabled={sendTo === 'whisper' && userList.length <= 1}
         />

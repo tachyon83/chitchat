@@ -105,8 +105,6 @@ function RoomList({
     fetchGroupList();
     refreshGroupList();
 
-    console.log('room list');
-
     return () => {
       socketIo.getSocket().then((socket) => {
         socket.off('room.list.refresh');

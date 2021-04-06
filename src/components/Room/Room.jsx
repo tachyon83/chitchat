@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import socketIo from '../../utils/util';
+import { FaLock } from 'react-icons/fa';
 import Rodal from 'react-modal';
 import styles from './room.module.scss';
 
@@ -12,7 +13,6 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
     if (roomFoldId) {
       // 접어두기와 동일한 방
       if (roomFoldId === parseInt(room.roomId)) {
-        console.log('enter fold room');
         setRoomId(roomFoldId);
         setRoomFoldId(null);
       } else {
@@ -82,7 +82,12 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
 
       <p className={styles.roomNum}>00{num + 1}</p>
       <p className={styles.roomTitle}>
-        {room.roomTitle} {room.roomPw && <span>Locked</span>}
+        {room.roomPw && (
+          <span className={styles.lock}>
+            <FaLock />
+          </span>
+        )}
+        {room.roomTitle}
       </p>
       <p className={styles.roomOwner}>{room.roomOwner}</p>
       <p className={styles.roomCount}>

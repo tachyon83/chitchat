@@ -15,6 +15,8 @@ function Lobby() {
   const [userList, setUserList] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [currentGroup, setCurrentGroup] = useState('');
+  const [clickUserInfo, setClickUserInfo] = useState({});
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
 
   const fetchUserInfo = () => {
     socketIo.getSocket().then((socket) => {
@@ -82,6 +84,44 @@ function Lobby() {
     (item, index) => userList.indexOf(item) === index
   );
 
+  const handleUserClick = (user) => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.info', user, (res) => {
+        setClickUserInfo(res.packet);
+      });
+    });
+    setShowUserInfoModal(true);
+  };
+
+  const closeUserInfoModal = () => {
+    setShowUserInfoModal(false);
+  };
+
+  const handleJoinGroup = () => {
+    socketIo.getSocket().then((socket) => {
+      socket.emit('user.read', (res) => {
+        if (res.packet.groupId === clickUserInfo.groupId) {
+          alert('You are already in the same group');
+          return;
+        }
+        if (res.packet.groupId) {
+          alert('You are already in a group');
+          return;
+        }
+        socketIo.getSocket().then((socket) => {
+          socket.emit('user.joinGroup', clickUserInfo.groupId, (res) => {
+            if (res.result) {
+              alert(
+                `You have joined the following group: ${clickUserInfo.groupId}`
+              );
+              setCurrentGroup(clickUserInfo.groupId);
+            }
+          });
+        });
+      });
+    });
+  };
+
   return (
     <Container>
       <div className={styles.body}>
@@ -116,7 +156,14 @@ function Lobby() {
             <p>[Current Users]</p>
             <ul className={styles.list}>
               {userList.map((user, i) => (
-                <li key={`${user}-${i}`}>{user}</li>
+                <li
+                  key={`${user}-${i}`}
+                  onClick={() => handleUserClick(user)}
+                  value={user}
+                  className={styles.singleUser}
+                >
+                  {user}
+                </li>
               ))}
             </ul>
             {/* 그룹 정보 */}
@@ -127,7 +174,6 @@ function Lobby() {
               </>
             )}
             <ul className={styles.list}>
-              {console.log(groupList)}
               {groupList.map((group, i) => (
                 <li key={`${group}-${i}`}>{group}</li>
               ))}
@@ -169,6 +215,15 @@ function Lobby() {
           </div>
           <button type="submit">Add New Group</button>
         </form>
+      </Rodal>
+      <Rodal visible={showUserInfoModal} onClose={closeUserInfoModal}>
+        <div className={styles.userInfo}>
+          <p>Name: {clickUserInfo.id}</p>
+          <p>Current Group: {clickUserInfo.groupId || 'None'}</p>
+        </div>
+        {clickUserInfo.groupId && (
+          <button onClick={handleJoinGroup}>Join same group</button>
+        )}
       </Rodal>
     </Container>
   );

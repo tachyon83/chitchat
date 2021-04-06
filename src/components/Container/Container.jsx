@@ -30,7 +30,6 @@ function Container({ children }) {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.read', (res) => {
         if (res.packet.pos !== 0) {
-          console.log(`IN ${res.packet.pos}`);
           socket.emit('room.leave', (res) => {
             if (!res.result) {
               alert('Failed to leave room');
