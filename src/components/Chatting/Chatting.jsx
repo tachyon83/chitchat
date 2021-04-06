@@ -151,14 +151,22 @@ function Chatting({
   const handleSendChat = (e) => {
     e.preventDefault();
 
-    socketIo.getSocket().then((socket) => {
-      socket.emit('user.read', (res) => {
-        if (!res.packet.groupId) {
-          alert('You are not in a group');
-          return;
-        }
+    let escapeSend = false;
+
+    if (sendTo === 'group') {
+      socketIo.getSocket().then((socket) => {
+        socket.emit('user.read', (res) => {
+          if (!res.packet.groupId) {
+            alert('You are not in a group');
+            escapeSend = true;
+          }
+        });
       });
-    });
+    }
+
+    if (escapeSend) {
+      return;
+    }
 
     const userListWithoutSelf = userList.filter((user) => user !== username);
 

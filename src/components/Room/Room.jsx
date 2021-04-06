@@ -15,6 +15,9 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
       if (roomFoldId === parseInt(room.roomId)) {
         setRoomId(roomFoldId);
         setRoomFoldId(null);
+        socketIo.getSocket().then((socket) => {
+          socket.off();
+        });
       } else {
         // 접어두기와 다른 방
         alert('접어두기한 방이 있습니다. ');
@@ -49,6 +52,9 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
         socket.emit('room.join', roomDto, (res) => {
           if (res.result) {
             setRoomId(parseInt(roomId));
+            socketIo.getSocket().then((socket) => {
+              socket.off();
+            });
           } else {
             alert('Could not enter room');
           }

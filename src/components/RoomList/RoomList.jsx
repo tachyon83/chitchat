@@ -106,11 +106,11 @@ function RoomList({
     refreshGroupList();
 
     return () => {
-      socketIo.getSocket().then((socket) => {
-        socket.off('room.list.refresh');
-        socket.off('user.listInLobby.refresh');
-        socket.off('group.list.refresh');
-      });
+      // socketIo.getSocket().then((socket) => {
+      //   socket.off('room.list.refresh');
+      //   socket.off('user.listInLobby.refresh');
+      //   socket.off('group.list.refresh');
+      // });
     };
   }, []);
 
