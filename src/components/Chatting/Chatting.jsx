@@ -15,6 +15,7 @@ function Chatting({
   setUserList,
   setGroupList,
   setRoomFoldId,
+  currentGroup,
   setCurrentGroup,
 }) {
   const username = useRecoilValue(UsernameState);
@@ -130,8 +131,12 @@ function Chatting({
 
   const refreshRoomInfo = () => {
     socketIo.getSocket().then((socket) => {
-      socket.emit('room.info.refresh', (res) => {
+      socket.on('room.info.refresh', (res) => {
         console.log(res);
+        if (res.result) {
+          setRoomName(res.packet.roomTitle);
+          setRoomInfo(res.packet);
+        }
       });
     });
   };
@@ -150,23 +155,6 @@ function Chatting({
 
   const handleSendChat = (e) => {
     e.preventDefault();
-
-    let escapeSend = false;
-
-    if (sendTo === 'group') {
-      socketIo.getSocket().then((socket) => {
-        socket.emit('user.read', (res) => {
-          if (!res.packet.groupId) {
-            alert('You are not in a group');
-            escapeSend = true;
-          }
-        });
-      });
-    }
-
-    if (escapeSend) {
-      return;
-    }
 
     const userListWithoutSelf = userList.filter((user) => user !== username);
 
@@ -257,7 +245,7 @@ function Chatting({
         </div>
       </div>
 
-      <ScrollToBottom className={styles.chattingContainer}>
+      <ScrollToBottom className={styles.chattingContainer} debug={false}>
         {chatData.map((chat, i) => (
           <Chat key={i} chat={chat} setCurrentGroup={setCurrentGroup} />
         ))}
@@ -290,9 +278,14 @@ function Chatting({
           placeholder={
             sendTo === 'whisper' && userList.length <= 1
               ? "Can't send whisper"
+              : sendTo === 'group' && currentGroup === null
+              ? 'Not in a group'
               : ''
           }
-          disabled={sendTo === 'whisper' && userList.length <= 1}
+          disabled={
+            (sendTo === 'whisper' && userList.length <= 1) ||
+            (sendTo === 'group' && currentGroup === null)
+          }
         />
         <button type="submit" onClick={handleSendChat}>
           Send

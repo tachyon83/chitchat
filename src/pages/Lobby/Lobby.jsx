@@ -30,7 +30,7 @@ function Lobby() {
     socketIo.getSocket().then((socket) => {
       socket.emit('user.disjoinGroup', (res) => {
         if (res.result) {
-          setCurrentGroup('');
+          setCurrentGroup(null);
         } else {
           alert('Failed to leave group');
         }
@@ -189,6 +189,7 @@ function Lobby() {
               setUserList={setUserList}
               setGroupList={setGroupList}
               setRoomFoldId={setRoomFoldId}
+              currentGroup={currentGroup}
               setCurrentGroup={setCurrentGroup}
             />
           ) : (

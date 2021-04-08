@@ -13,11 +13,11 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
     if (roomFoldId) {
       // 접어두기와 동일한 방
       if (roomFoldId === parseInt(room.roomId)) {
-        setRoomId(roomFoldId);
-        setRoomFoldId(null);
         socketIo.getSocket().then((socket) => {
           socket.off();
         });
+        setRoomId(roomFoldId);
+        setRoomFoldId(null);
       } else {
         // 접어두기와 다른 방
         alert('접어두기한 방이 있습니다. ');
@@ -51,10 +51,10 @@ function Room({ room, num, setRoomId, roomFoldId, setRoomFoldId }) {
       .then((socket) => {
         socket.emit('room.join', roomDto, (res) => {
           if (res.result) {
-            setRoomId(parseInt(roomId));
             socketIo.getSocket().then((socket) => {
               socket.off();
             });
+            setRoomId(parseInt(roomId));
           } else {
             alert('Could not enter room');
           }
