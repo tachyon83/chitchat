@@ -3,10 +3,28 @@ import socketIo from '../../utils/util';
 import { useRecoilValue } from 'recoil';
 import { UsernameState } from '../../recoil/atoms';
 import styles from './chatting.module.scss';
-import ScrollToBottom from 'react-scroll-to-bottom';
+import ScrollToBottom, { useAtTop } from 'react-scroll-to-bottom';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import Chat from '../Chat/Chat';
+
+const Content = ({ handleChatRead, chatData, setCurrentGroup }) => {
+  const [top] = useAtTop();
+
+  useEffect(() => {
+    if (top) {
+      handleChatRead();
+    }
+  }, [top]);
+
+  return (
+    <>
+      {chatData.map((chat, i) => (
+        <Chat key={i} chat={chat} setCurrentGroup={setCurrentGroup} />
+      ))}
+    </>
+  );
+};
 
 function Chatting({
   roomId,
@@ -32,6 +50,7 @@ function Chatting({
   const [whisperTarget, setWhisperTarget] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [chatData, setChatData] = useState([]);
+  const [pastIdArr, setPastIdArr] = useState([]);
 
   const chatType = [
     { id: 'all', name: 'All' },
@@ -101,8 +120,8 @@ function Chatting({
     socketIo.getSocket().then((socket) => {
       socket.emit('room.leave', (res) => {
         if (res.result) {
-          setRoomId(null);
           socket.off();
+          setRoomId(null);
         } else {
           alert('Failed to leave room');
         }
@@ -111,10 +130,10 @@ function Chatting({
   };
 
   const handleFoldButton = () => {
-    setRoomId(null);
-    setRoomFoldId(roomId);
     socketIo.getSocket().then((socket) => {
       socket.off();
+      setRoomFoldId(roomId);
+      setRoomId(null);
     });
   };
 
@@ -156,6 +175,10 @@ function Chatting({
   const handleSendChat = (e) => {
     e.preventDefault();
 
+    if (!chatInput) {
+      return;
+    }
+
     const userListWithoutSelf = userList.filter((user) => user !== username);
 
     const chatDto = {
@@ -190,6 +213,34 @@ function Chatting({
     });
   };
 
+  const handleChatRead = () => {
+    console.log(chatData);
+    console.log('HANDLE CHAT READ');
+
+    let pastId = null;
+    if (chatData.length) {
+      pastId = chatData[0].id;
+    }
+
+    if (!pastIdArr.includes(pastId)) {
+      socketIo.getSocket().then((socket) => {
+        socket.emit('chat.read', pastId, (res) => {
+          if (res.result) {
+            console.log('reading past chat');
+            console.log(pastId);
+            console.log(res.packet);
+            setChatData((prevChatData) => [
+              ...res.packet.reverse(),
+              ...prevChatData,
+            ]);
+          }
+        });
+      });
+
+      setPastIdArr((arr) => [...arr, pastId]);
+    }
+  };
+
   useEffect(() => {
     getRoomInfo();
     refreshRoomInfo();
@@ -198,9 +249,9 @@ function Chatting({
 
     socketIo.getSocket().then((socket) => {
       socket.on('chat.in', (res) => {
-        console.log(res.packet);
         if (res.result) {
           setChatData((prevChatData) => [...prevChatData, res.packet]);
+          console.log(res.packet);
         }
       });
     });
@@ -240,15 +291,19 @@ function Chatting({
           <button onClick={handleLeave} className={styles.leaveButton}>
             Leave Room
           </button>
-          <button onClick={handleEditButton}>Edit Room</button>
+          <button onClick={handleEditButton} className={styles.leaveButton}>
+            Edit Room
+          </button>
           <button onClick={handleFoldButton}>접기</button>
         </div>
       </div>
 
       <ScrollToBottom className={styles.chattingContainer} debug={false}>
-        {chatData.map((chat, i) => (
-          <Chat key={i} chat={chat} setCurrentGroup={setCurrentGroup} />
-        ))}
+        <Content
+          handleChatRead={handleChatRead}
+          chatData={chatData}
+          setCurrentGroup={setCurrentGroup}
+        />
       </ScrollToBottom>
 
       <form onSubmit={handleSendChat} className={styles.inputWrapper}>

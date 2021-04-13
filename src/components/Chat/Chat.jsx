@@ -66,7 +66,7 @@ function Chat({ chat, setCurrentGroup }) {
             : chat.type === 'group'
             ? styles.myChatToGroup
             : styles.myChatToWhisper
-        }`}
+        } ${styles.chat}`}
       >
         <div className={styles.myChatFrom}>
           {username}{' '}
@@ -89,7 +89,7 @@ function Chat({ chat, setCurrentGroup }) {
           : chat.type === 'group'
           ? styles.otherChatToGroup
           : styles.otherChatToWhisper
-      }`}
+      } ${styles.chat}`}
     >
       <div className={styles.otherChatFrom} onClick={handleFromClick}>
         {chat.from} {chat.type === 'group' && '[Group]'}

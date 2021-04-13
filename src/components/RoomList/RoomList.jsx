@@ -36,8 +36,10 @@ function RoomList({
   };
 
   const refreshRoomList = () => {
+    console.log('연결');
     socketIo.getSocket().then((socket) => {
       socket.on('room.list.refresh', (res) => {
+        console.log('refresh room list');
         fetchRoomList();
       });
     });
@@ -98,23 +100,21 @@ function RoomList({
   };
 
   useEffect(() => {
+    console.log('in room list');
     fetchRoomList();
     refreshRoomList();
     fetchUserList();
     refreshUserList();
     fetchGroupList();
     refreshGroupList();
-
-    return () => {
-      // socketIo.getSocket().then((socket) => {
-      //   socket.off('room.list.refresh');
-      //   socket.off('user.listInLobby.refresh');
-      //   socket.off('group.list.refresh');
-      // });
-    };
   }, []);
 
   const handleNewRoomClick = () => {
+    socketIo.getSocket().then((socket) => {
+      console.log(socket.listeners('room.list.refresh'));
+      console.log(socket.listeners('room.list'));
+    });
+
     setShowNewRoomModal(true);
   };
 
@@ -157,6 +157,11 @@ function RoomList({
     });
   };
 
+  const handleReenterRoom = () => {
+    setRoomId(roomFoldId);
+    setRoomFoldId(null);
+  };
+
   return (
     <div>
       <button className={styles.newRoomButton} onClick={handleNewRoomClick}>
@@ -172,6 +177,12 @@ function RoomList({
           setRoomFoldId={setRoomFoldId}
         />
       ))}
+
+      {roomFoldId && (
+        <button onClick={handleReenterRoom} className={styles.reenterButton}>
+          <span>Re-enter</span>
+        </button>
+      )}
 
       <Rodal visible={showNewRoomModal} onClose={closeNewRoomModal}>
         <form onSubmit={handleAddNewRoom} className={styles.newRoomModalForm}>
