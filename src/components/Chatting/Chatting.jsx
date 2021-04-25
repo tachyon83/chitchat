@@ -50,7 +50,6 @@ function Chatting({
   const [whisperTarget, setWhisperTarget] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [chatData, setChatData] = useState([]);
-  const [pastIdArr, setPastIdArr] = useState([]);
 
   const chatType = [
     { id: 'all', name: 'All' },
@@ -222,23 +221,24 @@ function Chatting({
       pastId = chatData[0].id;
     }
 
-    if (!pastIdArr.includes(pastId)) {
-      socketIo.getSocket().then((socket) => {
-        socket.emit('chat.read', pastId, (res) => {
-          if (res.result) {
-            console.log('reading past chat');
-            console.log(pastId);
-            console.log(res.packet);
-            setChatData((prevChatData) => [
-              ...res.packet.reverse(),
-              ...prevChatData,
-            ]);
-          }
-        });
-      });
+    socketIo.getSocket().then((socket) => {
+      socket.emit('chat.read', pastId, (res) => {
+        if (res.result) {
+          console.log('reading past chat');
+          console.log(pastId);
+          console.log(res.packet);
 
-      setPastIdArr((arr) => [...arr, pastId]);
-    }
+          let currentChatDataId = chatData.map((chat) => chat.id);
+          let filterNewChat = res.packet.filter(
+            (chat) => !currentChatDataId.includes(chat.id)
+          );
+          setChatData((prevChatData) => [
+            ...filterNewChat.reverse(),
+            ...prevChatData,
+          ]);
+        }
+      });
+    });
   };
 
   useEffect(() => {
@@ -294,7 +294,7 @@ function Chatting({
           <button onClick={handleEditButton} className={styles.leaveButton}>
             Edit Room
           </button>
-          <button onClick={handleFoldButton}>접기</button>
+          <button onClick={handleFoldButton}>Fold</button>
         </div>
       </div>
 
